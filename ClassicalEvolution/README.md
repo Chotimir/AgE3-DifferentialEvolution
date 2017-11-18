@@ -10,7 +10,7 @@ not deployed yet. In order to run this repository, follow these steps:
  3. Navigate to the `settings.gradle` file and append the following line:
     ```
     include 'AgE3-DifferentialEvolution/Commons'
-    include 'AgE3-DifferentialEvolution/HybridEvolution'
+    include 'AgE3-DifferentialEvolution/ClassicalEvolution'
     ```
      Then close the text editor.
  4. Add this repository as a submodule and navigate to it:
