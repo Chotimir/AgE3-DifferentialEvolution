@@ -1,5 +1,5 @@
 # AgE 3 Differential Evolution / Differential Evolution
-This project contains an [AgE3](https://gitlab.com/age-agh/age3)-compatible implementations of the Differential 
+This project contains an [AgE3](https://gitlab.com/age-agh/age3)-compatible implementation of the Differential 
 Evolution Algorithm for optimization of common test functions.
 
 ## Installation and Commissioning

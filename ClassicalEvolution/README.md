@@ -1,5 +1,5 @@
 # AgE 3 Differential Evolution / Classical Evolution
-This project contains an [AgE3](https://gitlab.com/age-agh/age3)-compatible implementations of the Classical Algorithm
+This project contains an [AgE3](https://gitlab.com/age-agh/age3)-compatible implementation of the Classical Algorithm
 for optimization of common test functions. The algorithm employs standard EMAS approach.
 
 ## Installation and Commissioning
