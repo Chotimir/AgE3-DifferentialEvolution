@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+		   http://www.springframework.org/schema/util
+		   http://www.springframework.org/schema/util/spring-util.xsd
+		   http://www.springframework.org/schema/context
+		   http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Common configuration import -->
+	<import resource="classpath:pl/edu/agh/age/de/common/common-config.xml"/>
+
+	<!-- Property placeholder -->
+	<context:property-placeholder location="classpath:pl/edu/agh/age/de/differential/differential-evolution-config.properties"
+								  order="0"/>
+	<context:property-placeholder location="classpath:pl/edu/agh/age/de/common/common-config.properties"
+								  order="1"/>
+
+
+	<!-- Problem definition -->
+	<bean id="problemDefinition" class="pl.edu.agh.age.de.common.problem.DifferentialEvolutionProblem">
+		<constructor-arg name="algorithm" value="${de.problem.algorithm}"/>
+		<constructor-arg name="testFunction" value="${de.problem.test-function}"/>
+		<constructor-arg name="problemSize" value="${de.problem.size}"/>
+	</bean>
+
+
+	<!-- Problem-specific beans -->
+	<bean id="populationManager" class="pl.edu.agh.age.compute.stream.de.reproduction.mutation.PopulationManager"/>
+
+
+	<!-- EMAS platform configuration related to the Differential Evolution problem -->
+	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
+		<constructor-arg ref="solutionEvaluator"/>
+	</bean>
+
+	<bean id="mutationManager" class="${de.mutation.class}">
+		<constructor-arg name="populationManager" ref="populationManager"/>
+		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
+		<constructor-arg name="mutationFactor" value="${de.mutation.factor}"/>
+	</bean>
+
+	<bean id="recombinationManager" class="${de.recombination.class}">
+		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
+		<constructor-arg name="crossoverRatio" value="${de.recombination.ratio}"/>
+	</bean>
+
+	<bean id="selectionManager" class="pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection"
+		  factory-method="${de.selection.method}"/>
+
+
+	<bean id="asexualReproductionEnergyTransfer" class="pl.edu.agh.age.compute.stream.emas.reproduction.transfer.AsexualEnergyTransfer"
+		  factory-method="${de.energy-transfer.asexual-reproduction.method}">
+		<constructor-arg name="proportion" value="${de.energy-transfer.asexual-reproduction.proportion}"/>
+		<constructor-arg name="minimumAgentEnergy" value="${de.death.energy-threshold}"/>
+	</bean>
+
+	<bean id="stepFunction" class="pl.edu.agh.age.compute.stream.de.DifferentialEvolutionStep">
+		<constructor-arg name="mutation" ref="mutationManager"/>
+		<constructor-arg name="recombination" ref="recombinationManager"/>
+		<constructor-arg name="selection" ref="selectionManager"/>
+		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
+		<constructor-arg name="deathPredicate" ref="deathPredicate"/>
+		<constructor-arg name="reproductionPredicate" ref="reproductionPredicate"/>
+		<constructor-arg name="asexualReproductionEnergyTransfer" ref="asexualReproductionEnergyTransfer"/>
+		<constructor-arg name="agentComparator" ref="agentComparator"/>
+		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
+	</bean>
+
+
+	<bean id="beforeStepAnalyzer" class="pl.edu.agh.age.compute.stream.BeforeStepAction"
+		  factory-method="simpleMerge"/>
+
+	<bean id="workplaceGenerator" class="pl.edu.agh.age.compute.stream.configuration.WorkplaceConfigurationGenerator">
+		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>
+		<constructor-arg name="generator" ref="populationGenerator"/>
+		<constructor-arg name="step" ref="stepFunction"/>
+		<constructor-arg name="afterStep" ref="afterStepAnalyzer"/>
+		<constructor-arg name="beforeStep" ref="beforeStepAnalyzer"/>
+	</bean>
+
+	<bean id="loggingParameters" class="pl.edu.agh.age.compute.stream.logging.LoggingParameters">
+		<constructor-arg name="problemDefinition" ref="problemDefinition"/>
+		<constructor-arg name="loggingInterval" ref="loggingInterval"/>
+	</bean>
+
+	<bean id="loggingService" class="pl.edu.agh.age.compute.stream.logging.DefaultLoggingService">
+		<constructor-arg name="parameters" ref="loggingParameters"/>
+		<constructor-arg name="evaluatorCounter" ref="evaluatorCounter"/>
+		<constructor-arg name="agentsRegistry" ref="agentsRegistry"/>
+	</bean>
+
+	<bean id="configuration" class="pl.edu.agh.age.compute.stream.configuration.Configuration">
+		<constructor-arg name="workplaceConfigurationGenerator" ref="workplaceGenerator"/>
+		<constructor-arg name="stopCondition" ref="stopCondition"/>
+		<constructor-arg name="loggingService" ref="loggingService"/>
+		<constructor-arg name="topology">
+			<bean class="${de.migration.topology}"/>
+		</constructor-arg>
+	</bean>
+
+</beans>
