@@ -66,9 +66,7 @@ public class DoubleVectorSolutionFactory {
 	 * {@link #evaluator}.
 	 */
 	public DoubleVectorSolution createRandom() {
-		final DoubleVectorSolution solution =
-			new DoubleVectorSolution(randomGenerator.doubles(problemSize, minimalValue, maximalValue).toArray());
-		return solution.updateFitness(evaluator.evaluate(solution));
+		return create(randomGenerator.doubles(problemSize, minimalValue, maximalValue).toArray());
 	}
 
 }
