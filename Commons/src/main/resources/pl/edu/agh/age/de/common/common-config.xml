@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+		   http://www.springframework.org/schema/util
+		   http://www.springframework.org/schema/util/spring-util.xsd
+		   http://www.springframework.org/schema/context
+		   http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Required to process annotations -->
+	<context:annotation-config/>
+
+	<!-- Property placeholder -->
+	<context:property-placeholder location="classpath:pl/edu/agh/age/de/common/common-config.properties"/>
+
+
+	<!-- EMAS platform configuration related to the Differential Evolution problem -->
+	<bean id="evaluatorCounter" class="pl.edu.agh.age.compute.stream.problem.EvaluatorCounter"
+		  factory-method="simpleCounter"/>
+	<bean id="solutionEvaluator" class="${de.solution-evaluator.class}">
+		<constructor-arg ref="evaluatorCounter"/>
+	</bean>
+
+	<bean id="solutionFactory" class="pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory">
+		<constructor-arg name="fitnessEvaluator" ref="solutionEvaluator"/>
+		<constructor-arg name="problemSize" value="${de.problem.size}"/>
+		<constructor-arg name="minimalValue" value="${de.problem.space.min-value}"/>
+		<constructor-arg name="maximalValue" value="${de.problem.space.max-value}"/>
+	</bean>
+
+	<bean id="populationGenerator" class="pl.edu.agh.age.de.common.population.RandomPopulationGenerator">
+		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
+		<constructor-arg name="agentsCount" value="${de.population-generator.initial-size}"/>
+		<constructor-arg name="initialEnergy" value="${de.population-generator.initial-energy}"/>
+	</bean>
+
+
+	<!-- Problem-independent EMAS platform configuration -->
+	<bean id="migrationParameters" class="pl.edu.agh.age.compute.stream.emas.migration.MigrationParameters">
+		<constructor-arg name="stepInterval" value="${de.migration.steps-interval}"/>
+		<constructor-arg name="partToMigrate" value="${de.migration.part-to-migrate}"/>
+		<constructor-arg name="migrateBestAgentsOnly" value="${de.migration.migrate-best-only}"/>
+	</bean>
+
+	<bean id="reproductionPredicate" class="pl.edu.agh.age.compute.stream.emas.Predicates"
+		  factory-method="${de.reproduction.method}">
+		<constructor-arg value="${de.reproduction.energy-threshold}"/>
+	</bean>
+
+	<bean id="deathPredicate" class="pl.edu.agh.age.compute.stream.emas.Predicates"
+		  factory-method="${de.death.method}">
+		<constructor-arg value="${de.death.energy-threshold}"/>
+	</bean>
+
+	<bean id="agentComparator" class="pl.edu.agh.age.compute.stream.emas.EmasAgentComparators"
+		  factory-method="${de.agents-comparator.method}"/>
+	<bean id="agentsRegistry" class="pl.edu.agh.age.compute.stream.emas.EmasBestAgentsRegistry">
+		<constructor-arg ref="agentComparator"/>
+	</bean>
+
+	<bean id="afterStepAnalyzer" class="pl.edu.agh.age.compute.stream.example.SampleAfterStepActionWithLogging"/>
+
+	<bean id="stopCondition" class="pl.edu.agh.age.compute.stream.TimedStopCondition">
+		<constructor-arg value="${de.stop-condition.time-in-seconds}" type="long"/>
+	</bean>
+
+	<bean id="loggingInterval" class="java.time.Duration"
+		  factory-method="ofMillis">
+		<constructor-arg value="${de.logging.interval-in-milliseconds}"/>
+	</bean>
+
+
+	<!-- Note that this bean must be named as "runnable" (because of the AgE platform's requirement). -->
+	<bean id="runnable" class="pl.edu.agh.age.compute.stream.StreamAgents"/>
+
+</beans>
