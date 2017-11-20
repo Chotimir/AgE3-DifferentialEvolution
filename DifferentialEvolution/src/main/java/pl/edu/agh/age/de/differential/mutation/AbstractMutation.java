@@ -21,7 +21,7 @@ abstract class AbstractMutation extends DifferentialEvolutionMutation<DoubleVect
 	 *                        the initial population.
 	 */
 	AbstractMutation(final PopulationManager<EmasAgent> populationManager,
-					 final DoubleVectorSolutionFactory solutionFactory, double mutationFactor) {
+					 final DoubleVectorSolutionFactory solutionFactory, final double mutationFactor) {
 		super(populationManager, mutationFactor);
 		this.solutionFactory = solutionFactory;
 	}

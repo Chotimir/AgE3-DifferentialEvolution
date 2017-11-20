@@ -24,11 +24,23 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> imple
 	 *                          composing current population.
 	 * @param mutationFactor    A scalar value used to calculate a donor vector by the Differential Evolution scheme.
 	 */
-	protected DifferentialEvolutionMutation(final PopulationManager<EmasAgent> populationManager, final double mutationFactor) {
+	public DifferentialEvolutionMutation(final PopulationManager<EmasAgent> populationManager, final double mutationFactor) {
 		this.populationManager = populationManager;
 		this.mutationFactor = mutationFactor;
 	}
 
+
+	public abstract S mutate();
+
+	/**
+	 * Please note that the Differential Evolution scheme does not require to modify a parent genotype by the mutation
+	 * operator. Therefore, the {@link Mutation#mutate(Solution)} method (included by convention) is shadowed by the
+	 * {@link #mutate()} method.
+	 */
+	@Override
+	public S mutate(final S solution) {
+		return mutate();
+	}
 
 	public PopulationManager<EmasAgent> getPopulationManager() {
 		return populationManager;

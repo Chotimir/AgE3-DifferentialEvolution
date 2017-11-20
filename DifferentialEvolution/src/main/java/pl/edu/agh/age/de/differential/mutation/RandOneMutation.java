@@ -17,8 +17,8 @@ import static pl.edu.agh.age.de.util.VectorUtil.*;
  */
 public class RandOneMutation extends AbstractMutation {
 
-	protected RandOneMutation(final PopulationManager<EmasAgent> populationManager,
-							  final DoubleVectorSolutionFactory solutionFactory, final double mutationFactor) {
+	public RandOneMutation(final PopulationManager<EmasAgent> populationManager,
+						   final DoubleVectorSolutionFactory solutionFactory, final double mutationFactor) {
 		super(populationManager, solutionFactory, mutationFactor);
 	}
 
@@ -31,7 +31,7 @@ public class RandOneMutation extends AbstractMutation {
 	 * </ul>
 	 */
 	@Override
-	public DoubleVectorSolution mutate(final DoubleVectorSolution solution) {
+	public DoubleVectorSolution mutate() {
 		final List<Array<Double>> randomGenotypes = getRandomGenotypes(3);
 
 		final Array<Double> donor = addVectors(randomGenotypes.get(0),
