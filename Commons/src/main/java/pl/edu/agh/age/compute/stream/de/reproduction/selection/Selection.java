@@ -19,7 +19,7 @@ public interface Selection<S extends Solution<?>> {
 	 * @param firstSolution  The first {@link Solution} acting as an input for the selection operator.
 	 * @param secondSolution The second {@link Solution} acting as an input for the selection operator.
 	 */
-	S select(S firstSolution, S secondSolution);
+	S select(final S firstSolution, final S secondSolution);
 
 
 	/**

@@ -38,7 +38,7 @@ public class PopulationManager<T extends Agent> {
 	 * to a current {@link #population}.
 	 */
 	public List<T> getRandom(final int size) {
-		checkArgument(size > 0 && size <= population.size());
+		checkArgument(0 < size && population.size() >= size);
 
 		return randomGenerator
 			.ints(0, population.size())

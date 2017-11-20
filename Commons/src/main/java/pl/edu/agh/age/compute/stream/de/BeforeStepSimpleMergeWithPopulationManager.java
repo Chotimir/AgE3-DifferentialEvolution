@@ -1,6 +1,5 @@
 package pl.edu.agh.age.compute.stream.de;
 
-import javaslang.Function3;
 import javaslang.collection.List;
 import pl.edu.agh.age.compute.stream.Agent;
 import pl.edu.agh.age.compute.stream.BeforeStepAction;
@@ -35,11 +34,10 @@ public class BeforeStepSimpleMergeWithPopulationManager<T extends Agent> impleme
 	 */
 	@Override
 	public List<T> apply(final Long step, final List<T> population, final List<T> newAgents) {
-		Function3<Long, List<T>, List<T>, List<T>> simpleMerge = BeforeStepAction.simpleMerge();
+		final BeforeStepAction<T> simpleMerge = BeforeStepAction.simpleMerge();
+		final List<T> updatedPopulation = simpleMerge.apply(step, population, newAgents);
 
-		List<T> updatedPopulation = simpleMerge.apply(step, population, newAgents);
 		populationManager.setPopulation(updatedPopulation);
-
 		return updatedPopulation;
 	}
 

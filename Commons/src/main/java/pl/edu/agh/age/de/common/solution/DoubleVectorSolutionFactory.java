@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class DoubleVectorSolutionFactory {
 
-	private final Evaluator<DoubleVectorSolution> fitnessEvaluator;
+	private final Evaluator<DoubleVectorSolution> evaluator;
 	private final Random randomGenerator;
 
 	private final int problemSize;
@@ -24,18 +24,18 @@ public class DoubleVectorSolutionFactory {
 
 
 	/**
-	 * @param fitnessEvaluator An object implementing the evaluation strategy for particular {@link DoubleVectorSolution
-	 *                         solutions}.
-	 * @param problemSize      A number of dimensions of the test function.
-	 * @param minimalValue     A lower boundary of the search space (i.e. the minimal value of a particular gene).
-	 * @param maximalValue     An upper boundary of the search space (i.e. the maximal value of a particular gene).
+	 * @param evaluator    An object implementing the evaluation strategy for particular {@link DoubleVectorSolution
+	 *                     solutions}.
+	 * @param problemSize  A number of dimensions of the test function.
+	 * @param minimalValue A lower boundary of the search space (i.e. the minimal value of a particular gene).
+	 * @param maximalValue An upper boundary of the search space (i.e. the maximal value of a particular gene).
 	 */
-	public DoubleVectorSolutionFactory(final Evaluator<DoubleVectorSolution> fitnessEvaluator, final int problemSize,
+	public DoubleVectorSolutionFactory(final Evaluator<DoubleVectorSolution> evaluator, final int problemSize,
 									   final double minimalValue, final double maximalValue) {
-		checkArgument(problemSize > 0);
+		checkArgument(0 < problemSize);
 		checkArgument(minimalValue < maximalValue);
 
-		this.fitnessEvaluator = fitnessEvaluator;
+		this.evaluator = evaluator;
 		randomGenerator = ThreadLocalRandom.current();
 
 		this.problemSize = problemSize;
@@ -54,21 +54,21 @@ public class DoubleVectorSolutionFactory {
 
 	/**
 	 * Returns a new {@link DoubleVectorSolution solution} holding given {@code genes} with a fitness value evaluated by
-	 * the {@link #fitnessEvaluator evaluator}.
+	 * the {@link #evaluator}.
 	 */
 	public DoubleVectorSolution create(final double[] genes) {
-		DoubleVectorSolution solution = new DoubleVectorSolution(genes);
-		return solution.updateFitness(fitnessEvaluator.evaluate(solution));
+		final DoubleVectorSolution solution = new DoubleVectorSolution(genes);
+		return solution.updateFitness(evaluator.evaluate(solution));
 	}
 
 	/**
 	 * Returns a new {@link DoubleVectorSolution solution} with random genotype and a fitness value evaluated by the
-	 * {@link #fitnessEvaluator evaluator}.
+	 * {@link #evaluator}.
 	 */
 	public DoubleVectorSolution createRandom() {
-		DoubleVectorSolution solution =
+		final DoubleVectorSolution solution =
 			new DoubleVectorSolution(randomGenerator.doubles(problemSize, minimalValue, maximalValue).toArray());
-		return solution.updateFitness(fitnessEvaluator.evaluate(solution));
+		return solution.updateFitness(evaluator.evaluate(solution));
 	}
 
 }

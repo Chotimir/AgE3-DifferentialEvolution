@@ -21,7 +21,7 @@ public class RastriginEvaluator implements Evaluator<DoubleVectorSolution> {
 	/**
 	 * @param counter Counter of the number of invocations of this evaluator.
 	 */
-	public RastriginEvaluator(EvaluatorCounter counter) {
+	public RastriginEvaluator(final EvaluatorCounter counter) {
 		this.counter = counter;
 	}
 
@@ -30,7 +30,7 @@ public class RastriginEvaluator implements Evaluator<DoubleVectorSolution> {
 	 * Performs the update of the {@link #counter} and returns a fitness value for given {@code solution}.
 	 */
 	@Override
-	public double evaluate(DoubleVectorSolution solution) {
+	public double evaluate(final DoubleVectorSolution solution) {
 		counter.increment();
 		return evaluate(solution.values());
 	}
@@ -39,7 +39,7 @@ public class RastriginEvaluator implements Evaluator<DoubleVectorSolution> {
 	/**
 	 * Calculates a value of the Rastrigin function at given point represented by {@code genes}.
 	 */
-	private double evaluate(double[] genes) {
+	private double evaluate(final double[] genes) {
 		return A * genes.length +
 			Arrays.stream(genes).map(gene -> Math.pow(gene, 2.0d) - A * Math.cos(2 * Math.PI * gene)).sum();
 

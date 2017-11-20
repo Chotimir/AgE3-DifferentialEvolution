@@ -1,12 +1,13 @@
 package pl.edu.agh.age.de.differential.recombination;
 
-import com.hazelcast.util.Preconditions;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
 import pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This class implements a standard recombination mechanism employed by the Differential Evolution scheme. This
@@ -28,6 +29,8 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 	 * @param crossoverRatio  A portion of genes to be recombined.
 	 */
 	public RandomCoordinatesRecombination(final DoubleVectorSolutionFactory solutionFactory, final double crossoverRatio) {
+		checkArgument(0 <= crossoverRatio && 1 >= crossoverRatio);
+
 		this.solutionFactory = solutionFactory;
 		this.crossoverRatio = crossoverRatio;
 	}
@@ -38,7 +41,7 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 	 */
 	@Override
 	public DoubleVectorSolution recombine(final DoubleVectorSolution individual, final DoubleVectorSolution donor) {
-		Preconditions.checkTrue(individual.length() == donor.length(), "Recombined vectors must be the same length");
+		checkArgument(individual.length() == donor.length());
 
 		final double[] individualGenotype = individual.values();
 		final double[] donorGenotype = donor.values();

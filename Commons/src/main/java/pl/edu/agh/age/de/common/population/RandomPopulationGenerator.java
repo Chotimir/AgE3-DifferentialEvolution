@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class is responsible for generating an initial population randomly.
@@ -33,10 +32,10 @@ public class RandomPopulationGenerator implements PopulationGenerator<EmasAgent>
 	 */
 	public RandomPopulationGenerator(final DoubleVectorSolutionFactory solutionFactory, final int agentsCount,
 									 final int initialEnergy) {
-		checkArgument(agentsCount > 0);
-		checkArgument(initialEnergy > 0);
+		checkArgument(0 < agentsCount);
+		checkArgument(0 < initialEnergy);
 
-		this.solutionFactory = checkNotNull(solutionFactory);
+		this.solutionFactory = solutionFactory;
 
 		this.agentsCount = agentsCount;
 		this.initialEnergy = initialEnergy;

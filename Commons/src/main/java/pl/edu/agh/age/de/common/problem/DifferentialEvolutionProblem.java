@@ -31,7 +31,7 @@ public class DifferentialEvolutionProblem implements ProblemDefinition {
 	 * @param problemSize  A number of dimensions of the test function.
 	 */
 	public DifferentialEvolutionProblem(final String algorithm, final String testFunction, final int problemSize) {
-		checkArgument(problemSize > 0);
+		checkArgument(0 < problemSize);
 
 		this.algorithm = algorithm;
 		this.testFunction = testFunction;
@@ -53,7 +53,7 @@ public class DifferentialEvolutionProblem implements ProblemDefinition {
 	}
 
 	@Override
-	public boolean equals(Object object) {
+	public boolean equals(final Object object) {
 		if (this == object) {
 			return true;
 		}

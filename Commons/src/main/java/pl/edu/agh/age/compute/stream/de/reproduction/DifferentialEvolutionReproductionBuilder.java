@@ -1,11 +1,12 @@
 package pl.edu.agh.age.compute.stream.de.reproduction;
 
-import com.google.common.base.Preconditions;
 import pl.edu.agh.age.compute.stream.de.reproduction.mutation.DifferentialEvolutionMutation;
 import pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.reproduction.transfer.AsexualEnergyTransfer;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This class defines a builder pattern for creating a {@link DifferentialEvolutionReproduction reproduction} strategy.
@@ -61,8 +62,7 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	 * operators set previously.
 	 */
 	public DifferentialEvolutionReproduction build() {
-		Preconditions.checkState(mutation != null && recombination != null && selection != null &&
-			asexualReproductionEnergyTransfer != null);
+		checkState(mutation != null && recombination != null && selection != null && asexualReproductionEnergyTransfer != null);
 
 		return parentAgent -> DifferentialEvolutionReproductionPipeline.<S>on(parentAgent)
 			.mutate(mutation)

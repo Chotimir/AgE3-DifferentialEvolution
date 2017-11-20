@@ -1,6 +1,5 @@
 package pl.edu.agh.age.compute.stream.de.reproduction;
 
-import com.google.common.base.Preconditions;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import pl.edu.agh.age.compute.stream.de.reproduction.mutation.DifferentialEvolutionMutation;
@@ -9,6 +8,8 @@ import pl.edu.agh.age.compute.stream.emas.EmasAgent;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.reproduction.transfer.AsexualEnergyTransfer;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This class defines a standard pipeline for creating child {@link EmasAgent agents} according to the Differential
@@ -30,15 +31,17 @@ public class DifferentialEvolutionReproductionPipeline<S extends Solution<?>> {
 		this(parentAgent, null);
 	}
 
-	private DifferentialEvolutionReproductionPipeline(EmasAgent parentAgent, S donorSolution) {
+	private DifferentialEvolutionReproductionPipeline(final EmasAgent parentAgent, final S donorSolution) {
 		this(parentAgent, donorSolution, null);
 	}
 
-	private DifferentialEvolutionReproductionPipeline(EmasAgent parentAgent, S donorSolution, S trialSolution) {
+	private DifferentialEvolutionReproductionPipeline(final EmasAgent parentAgent, final S donorSolution,
+													  final S trialSolution) {
 		this(parentAgent, donorSolution, trialSolution, null);
 	}
 
-	private DifferentialEvolutionReproductionPipeline(EmasAgent parentAgent, S donorSolution, S trialSolution, S childSolution) {
+	private DifferentialEvolutionReproductionPipeline(final EmasAgent parentAgent, final S donorSolution,
+													  final S trialSolution, final S childSolution) {
 		this(parentAgent, null, donorSolution, trialSolution, childSolution);
 	}
 
@@ -51,8 +54,8 @@ public class DifferentialEvolutionReproductionPipeline<S extends Solution<?>> {
 	 *                      the Differential Evolution scheme.
 	 * @param childSolution A solution held by a {@link #childAgent}.
 	 */
-	private DifferentialEvolutionReproductionPipeline(EmasAgent parentAgent, EmasAgent childAgent,
-													  S donorSolution, S trialSolution, S childSolution) {
+	private DifferentialEvolutionReproductionPipeline(final EmasAgent parentAgent, final EmasAgent childAgent,
+													  final S donorSolution, final S trialSolution, final S childSolution) {
 		this.parentAgent = parentAgent;
 		this.childAgent = childAgent;
 
@@ -95,7 +98,7 @@ public class DifferentialEvolutionReproductionPipeline<S extends Solution<?>> {
 	 * Returns a tuple consisting of two agents: a parent and a child (created by an execution of this pipeline).
 	 */
 	public Tuple2<EmasAgent, EmasAgent> extract() {
-		Preconditions.checkState(parentAgent != null && childAgent != null);
+		checkState(parentAgent != null && childAgent != null);
 		return Tuple.of(parentAgent, childAgent);
 	}
 

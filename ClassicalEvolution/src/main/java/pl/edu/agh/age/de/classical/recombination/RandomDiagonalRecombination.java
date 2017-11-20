@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class implements the recombination operator for Classical EMAS Algorithm. This recombination strategy draws a
@@ -28,7 +27,7 @@ public class RandomDiagonalRecombination implements Recombination<DoubleVectorSo
 	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects.
 	 */
 	public RandomDiagonalRecombination(final DoubleVectorSolutionFactory solutionFactory) {
-		this.solutionFactory = checkNotNull(solutionFactory);
+		this.solutionFactory = solutionFactory;
 		randomGenerator = ThreadLocalRandom.current();
 	}
 

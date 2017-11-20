@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.hazelcast.util.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class implements a standard {@link Step} performed by the Differential Evolution scheme.
@@ -46,6 +46,9 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 
 
 	/**
+	 * Please note that all arguments must be non-null in order to perform a complete Differential Evolution step in the
+	 * EMAS environment.
+	 *
 	 * @param mutation                          A mutation operator employed by the Differential Evolution scheme.
 	 * @param recombination                     A recombination operator employed by the Differential Evolution scheme.
 	 * @param selection                         A selection operator employed by the Differential Evolution scheme.
@@ -62,18 +65,18 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 									 final AsexualEnergyTransfer asexualReproductionEnergyTransfer,
 									 final Comparator<EmasAgent> agentComparator,
 									 final MigrationParameters migrationParameters) {
-		this.populationManager = checkNotNull(mutation).getPopulationManager();
-		this.populationEvaluator = checkNotNull(populationEvaluator);
+		populationManager = requireNonNull(mutation).getPopulationManager();
+		this.populationEvaluator = requireNonNull(populationEvaluator);
 
-		this.deathPredicate = checkNotNull(deathPredicate);
-		this.reproductionPredicate = checkNotNull(reproductionPredicate);
+		this.deathPredicate = requireNonNull(deathPredicate);
+		this.reproductionPredicate = requireNonNull(reproductionPredicate);
 
-		this.asexualReproductionEnergyTransfer = checkNotNull(asexualReproductionEnergyTransfer);
-		this.reproductionStrategy = resolveReproductionStrategy(mutation, checkNotNull(recombination), checkNotNull(selection));
+		this.asexualReproductionEnergyTransfer = requireNonNull(asexualReproductionEnergyTransfer);
+		reproductionStrategy = resolveReproductionStrategy(mutation, requireNonNull(recombination), requireNonNull(selection));
 
-		this.agentComparator = checkNotNull(agentComparator);
+		this.agentComparator = requireNonNull(agentComparator);
 
-		this.migrationParameters = checkNotNull(migrationParameters);
+		this.migrationParameters = requireNonNull(migrationParameters);
 	}
 
 
