@@ -1,6 +1,7 @@
 package pl.edu.agh.age.de.common.solution.evaluator;
 
-import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
+import javaslang.collection.Array;
+import pl.edu.agh.age.compute.stream.emas.solution.Solution;
 import pl.edu.agh.age.compute.stream.problem.Evaluator;
 import pl.edu.agh.age.compute.stream.problem.EvaluatorCounter;
 
@@ -9,7 +10,7 @@ import pl.edu.agh.age.compute.stream.problem.EvaluatorCounter;
  *
  * @author Bartłomiej Grochal
  */
-public abstract class AbstractEvaluator implements Evaluator<DoubleVectorSolution> {
+public abstract class AbstractEvaluator implements Evaluator<Solution<Array<Double>>> {
 
 	private final EvaluatorCounter counter;
 
@@ -26,12 +27,12 @@ public abstract class AbstractEvaluator implements Evaluator<DoubleVectorSolutio
 	 * Performs the update of the {@link #counter} and returns a particular fitness value for given {@code solution}.
 	 */
 	@Override
-	public double evaluate(final DoubleVectorSolution solution) {
+	public double evaluate(final Solution<Array<Double>> solution) {
 		counter.increment();
-		return evaluate(solution.values());
+		return evaluate(solution.unwrap());
 	}
 
 
-	abstract double evaluate(final double[] genes);
+	abstract double evaluate(final Array<Double> genes);
 
 }
