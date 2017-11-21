@@ -29,6 +29,7 @@ applicationDefaultJvmArgs = [
 
 dependencies {
 	compile project(':AgE3-DifferentialEvolution/Commons')
+	testCompile project(':AgE3-DifferentialEvolution/Commons').sourceSets.test.output
 }
 
 shadowJar {
