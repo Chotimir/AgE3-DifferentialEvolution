@@ -66,7 +66,7 @@ public class RandomDisturbanceMutation implements Mutation<DoubleVectorSolution>
 	 */
 	private double calculateDisturbance(final double value) {
 		// TODO: Trim the new value to the boundaries of the search space.
-		double disturbance = -disturbanceRange * (2 * randomGenerator.nextDouble() - 1);
+		double disturbance = disturbanceRange * (2 * randomGenerator.nextDouble() - 1);
 		return value + disturbance;
 	}
 
