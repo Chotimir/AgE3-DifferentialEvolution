@@ -4,6 +4,7 @@ import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombinati
 import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
 import pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
@@ -20,6 +21,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class RandomCoordinatesRecombination implements Recombination<DoubleVectorSolution> {
 
 	private final DoubleVectorSolutionFactory solutionFactory;
+	private final Random randomGenerator;
+
 	private final double crossoverRatio;
 
 
@@ -32,6 +35,8 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 		checkArgument(0 <= crossoverRatio && 1 >= crossoverRatio);
 
 		this.solutionFactory = solutionFactory;
+		randomGenerator = ThreadLocalRandom.current();
+
 		this.crossoverRatio = crossoverRatio;
 	}
 
@@ -65,8 +70,7 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 	 * recombined or not.
 	 */
 	private double[] getCrossoverProbabilities(final int size) {
-		return ThreadLocalRandom.current()
-			.doubles()
+		return randomGenerator.doubles()
 			.limit(size)
 			.toArray();
 	}
@@ -75,7 +79,7 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 	 * Draws a position of single gene (limited by a {@code bound}) to be recombined.
 	 */
 	private int getFixedCoordinate(final int bound) {
-		return ThreadLocalRandom.current().nextInt(bound);
+		return randomGenerator.nextInt(bound);
 	}
 
 }
