@@ -35,6 +35,12 @@
 
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
+	<bean id="populationGeneratorWithNoEnergy" class="pl.edu.agh.age.de.common.population.RandomPopulationGenerator">
+		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
+		<constructor-arg name="agentsCount" value="${de.population-generator.initial-size}"/>
+		<constructor-arg name="initialEnergy" value="#{ T(java.lang.Double).NaN }"/>
+	</bean>
+
 	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
 		<constructor-arg ref="solutionEvaluator"/>
 	</bean>
@@ -60,16 +66,25 @@
 		<constructor-arg name="minimumAgentEnergy" value="${de.death.energy-threshold}"/>
 	</bean>
 
-	<bean id="stepFunction" class="pl.edu.agh.age.compute.stream.de.DifferentialEvolutionStep">
+	<bean id="standardStepFunction" class="pl.edu.agh.age.compute.stream.de.DifferentialEvolutionStep">
 		<constructor-arg name="mutation" ref="mutationManager"/>
 		<constructor-arg name="recombination" ref="recombinationManager"/>
 		<constructor-arg name="selection" ref="selectionManager"/>
 		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
+		<constructor-arg name="agentComparator" ref="agentComparator"/>
+		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
+	</bean>
+
+	<bean id="stepWithEnergyFunction" class="pl.edu.agh.age.compute.stream.de.DifferentialEvolutionStepWithEnergy">
+		<constructor-arg name="mutation" ref="mutationManager"/>
+		<constructor-arg name="recombination" ref="recombinationManager"/>
+		<constructor-arg name="selection" ref="selectionManager"/>
+		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
+		<constructor-arg name="agentComparator" ref="agentComparator"/>
+		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 		<constructor-arg name="deathPredicate" ref="deathPredicate"/>
 		<constructor-arg name="reproductionPredicate" ref="reproductionPredicate"/>
 		<constructor-arg name="asexualReproductionEnergyTransfer" ref="asexualReproductionEnergyTransfer"/>
-		<constructor-arg name="agentComparator" ref="agentComparator"/>
-		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 	</bean>
 
 
@@ -78,8 +93,8 @@
 
 	<bean id="workplaceGenerator" class="pl.edu.agh.age.compute.stream.configuration.WorkplaceConfigurationGenerator">
 		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>
-		<constructor-arg name="generator" ref="populationGenerator"/>
-		<constructor-arg name="step" ref="stepFunction"/>
+		<constructor-arg name="generator" ref="${de.population-generator.bean}"/>
+		<constructor-arg name="step" ref="${de.step.bean}"/>
 		<constructor-arg name="afterStep" ref="afterStepAnalyzer"/>
 		<constructor-arg name="beforeStep" ref="beforeStepAnalyzer"/>
 	</bean>

@@ -62,14 +62,21 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	 * operators set previously.
 	 */
 	public DifferentialEvolutionReproduction build() {
-		checkState(mutation != null && recombination != null && selection != null && asexualReproductionEnergyTransfer != null);
+		checkState(mutation != null && recombination != null && selection != null);
 
-		return parentAgent -> DifferentialEvolutionReproductionPipeline.<S>on(parentAgent)
-			.mutate(mutation)
-			.recombine(recombination)
-			.select(selection)
-			.transferEnergy(asexualReproductionEnergyTransfer)
-			.extract();
+		return parentAgent -> {
+			DifferentialEvolutionReproductionPipeline<S> reproductionPipeline = DifferentialEvolutionReproductionPipeline.<S>on(parentAgent)
+				.mutate(mutation)
+				.recombine(recombination)
+				.select(selection);
+			if (asexualReproductionEnergyTransfer != null) {
+				reproductionPipeline = reproductionPipeline.transferEnergy(asexualReproductionEnergyTransfer);
+			} else {
+				reproductionPipeline = reproductionPipeline.createChildWithNoEnergy();
+			}
+
+			return reproductionPipeline.extract();
+		};
 	}
 
 }

@@ -94,6 +94,13 @@ public class DifferentialEvolutionReproductionPipeline<S extends Solution<?>> {
 		return new DifferentialEvolutionReproductionPipeline<>(parentAgent, childAgent, donorSolution, trialSolution, childSolution);
 	}
 
+	public DifferentialEvolutionReproductionPipeline<S> createChildWithNoEnergy() {
+		final EmasAgent childAgent = this.childAgent != null ?
+			this.childAgent.withEnergy(Double.NaN) : EmasAgent.create(Double.NaN, childSolution);
+
+		return new DifferentialEvolutionReproductionPipeline<>(parentAgent, childAgent, donorSolution, trialSolution, childSolution);
+	}
+
 	/**
 	 * Returns a tuple consisting of two agents: a parent and a child (created by an execution of this pipeline).
 	 */
