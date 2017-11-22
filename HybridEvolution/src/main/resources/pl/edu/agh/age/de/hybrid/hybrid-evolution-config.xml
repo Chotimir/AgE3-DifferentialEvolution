@@ -53,6 +53,9 @@
 		<constructor-arg name="mutation" ref="differentialEvolutionMutation"/>
 		<constructor-arg name="recombination" ref="differentialEvolutionRecombination"/>
 		<constructor-arg name="selection" ref="differentialEvolutionSelection"/>
+		<constructor-arg name="improvementPredicate">
+			<bean class="${de.improvement.predicate.class}" factory-method="${de.improvement.predicate.method}"/>
+		</constructor-arg>
 	</bean>
 
 	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
