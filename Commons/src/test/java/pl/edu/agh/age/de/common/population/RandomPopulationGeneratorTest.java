@@ -25,7 +25,7 @@ public class RandomPopulationGeneratorTest {
 	@Before
 	public void setUp() {
 		agentsCount = 5;
-		populationGenerator = new RandomPopulationGenerator(solutionFactory, agentsCount, 50);
+		populationGenerator = new RandomPopulationGenerator(solutionFactory, agentsCount, 50.0);
 	}
 
 	@Test

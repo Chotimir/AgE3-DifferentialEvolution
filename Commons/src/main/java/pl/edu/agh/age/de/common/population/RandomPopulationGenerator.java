@@ -21,7 +21,7 @@ public class RandomPopulationGenerator implements PopulationGenerator<EmasAgent>
 	private final DoubleVectorSolutionFactory solutionFactory;
 
 	private final int agentsCount;
-	private final int initialEnergy;
+	private final double initialEnergy;
 
 
 	/**
@@ -31,9 +31,9 @@ public class RandomPopulationGenerator implements PopulationGenerator<EmasAgent>
 	 * @param initialEnergy   Amount of energy deposited to each of newly-created individuals.
 	 */
 	public RandomPopulationGenerator(final DoubleVectorSolutionFactory solutionFactory, final int agentsCount,
-									 final int initialEnergy) {
+									 final double initialEnergy) {
 		checkArgument(0 < agentsCount);
-		checkArgument(0 < initialEnergy);
+		checkArgument(Double.isNaN(initialEnergy) || 0 < initialEnergy);
 
 		this.solutionFactory = solutionFactory;
 
