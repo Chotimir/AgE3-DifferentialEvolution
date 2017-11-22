@@ -27,7 +27,7 @@
 	</bean>
 
 	<bean id="solutionFactory" class="pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory">
-		<constructor-arg name="fitnessEvaluator" ref="solutionEvaluator"/>
+		<constructor-arg name="evaluator" ref="solutionEvaluator"/>
 		<constructor-arg name="problemSize" value="${de.problem.size}"/>
 		<constructor-arg name="minimalValue" value="${de.problem.space.min-value}"/>
 		<constructor-arg name="maximalValue" value="${de.problem.space.max-value}"/>
