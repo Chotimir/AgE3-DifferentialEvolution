@@ -22,7 +22,7 @@ public class PopulationManagerTest {
 
 	@Before
 	public void setUp() {
-		populationManager = new PopulationManager<>();
+		populationManager = new PopulationManager<>(1);
 	}
 
 	@Test
@@ -32,10 +32,10 @@ public class PopulationManagerTest {
 		final Agent thirdAgent = mock(Agent.class);
 
 		final List<Agent> population = Arrays.asList(firstAgent, secondAgent, thirdAgent);
-		populationManager.setPopulation(population);
+		populationManager.setPopulation(population, 0);
 
 		final int expectedSize = 2;
-		final List<Agent> randomAgents = populationManager.getRandom(2);
+		final List<Agent> randomAgents = populationManager.getRandom(2, 0);
 
 		Assert.assertEquals(expectedSize, randomAgents.size());
 		Assert.assertTrue(population.containsAll(randomAgents));
@@ -44,12 +44,12 @@ public class PopulationManagerTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void getRandomShouldThrowIllegalArgumentExceptionForZeroSize() {
-		populationManager.getRandom(0);
+		populationManager.getRandom(0, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void getRandomShouldThrowIllegalArgumentExceptionForTooBigSize() {
-		populationManager.getRandom(1);
+		populationManager.getRandom(1, 0);
 	}
 
 }

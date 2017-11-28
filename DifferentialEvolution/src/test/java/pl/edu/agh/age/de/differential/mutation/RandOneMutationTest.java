@@ -42,11 +42,11 @@ public class RandOneMutationTest {
 		final EmasAgent secondNeighbour = EmasAgent.create(0, new DoubleVectorSolution(new double[]{-4.0d, 5.0d, 0.0d, -1.0d}));
 		final EmasAgent thirdNeighbour = EmasAgent.create(0, new DoubleVectorSolution(new double[]{1.0d, -1.0d, 1.0d, -1.0d}));
 
-		when(populationManager.getRandom(3)).thenReturn(Arrays.asList(firstNeighbour, secondNeighbour, thirdNeighbour));
+		when(populationManager.getRandom(3, 0)).thenReturn(Arrays.asList(firstNeighbour, secondNeighbour, thirdNeighbour));
 		when(solutionFactory.create(any())).thenAnswer(invocation ->
 			new DoubleVectorSolution((double[]) invocation.getArguments()[0]));
 
-		final DoubleVectorSolution donorSolution = mutation.mutate();
+		final DoubleVectorSolution donorSolution = mutation.mutate(new DoubleVectorSolution(new double[]{Double.NaN}), 0);
 
 		Assert.assertArrayEquals(new double[]{-2.5d, 4.0d, -2.5d, 3.0d}, donorSolution.values(), ACCURACY);
 	}
