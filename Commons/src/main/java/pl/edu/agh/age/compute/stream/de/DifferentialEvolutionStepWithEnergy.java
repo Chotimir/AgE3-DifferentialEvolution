@@ -9,7 +9,6 @@ import pl.edu.agh.age.compute.stream.de.reproduction.mutation.DifferentialEvolut
 import pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection;
 import pl.edu.agh.age.compute.stream.emas.EmasAgent;
 import pl.edu.agh.age.compute.stream.emas.Pipeline;
-import pl.edu.agh.age.compute.stream.emas.PopulationEvaluator;
 import pl.edu.agh.age.compute.stream.emas.migration.MigrationParameters;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.reproduction.transfer.AsexualEnergyTransfer;
@@ -42,11 +41,10 @@ public class DifferentialEvolutionStepWithEnergy<S extends Solution<?>> extends 
 	 * @param asexualReproductionEnergyTransfer A strategy of transferring energy between parents and children.
 	 */
 	public DifferentialEvolutionStepWithEnergy(final DifferentialEvolutionMutation<S> mutation, final Recombination<S> recombination, final Selection<S> selection,
-											   final PopulationEvaluator<EmasAgent> populationEvaluator,
 											   final Comparator<EmasAgent> agentComparator, final MigrationParameters migrationParameters,
 											   final Predicate<EmasAgent> deathPredicate, final Predicate<EmasAgent> reproductionPredicate,
 											   final AsexualEnergyTransfer asexualReproductionEnergyTransfer) {
-		super(mutation, recombination, selection, populationEvaluator, agentComparator, migrationParameters);
+		super(mutation, recombination, selection, agentComparator, migrationParameters);
 
 		this.deathPredicate = requireNonNull(deathPredicate);
 		this.reproductionPredicate = requireNonNull(reproductionPredicate);
@@ -57,15 +55,14 @@ public class DifferentialEvolutionStepWithEnergy<S extends Solution<?>> extends 
 
 	@Override
 	public List<EmasAgent> stepOn(final long stepNumber, final List<EmasAgent> population, final Environment environment) {
-		populationManager.setPopulation(population);
+		populationManager.setPopulation(population, environment.workplaceId());
 
-		final DifferentialEvolutionReproduction reproductionStrategy = resolveReproductionStrategy();
+		final DifferentialEvolutionReproduction reproductionStrategy = resolveReproductionStrategy(environment);
 		final Tuple2<Pipeline, Pipeline> reproducedPopulationPipelines = Pipeline.on(population)
 			.selfReproduce(reproductionPredicate, reproductionStrategy);
 
-		final Tuple2<Pipeline, Pipeline> finalPopulationPipeline = reproducedPopulationPipelines
-			._2.evaluate(populationEvaluator)
-			.mergeWith(reproducedPopulationPipelines._1)
+		final Tuple2<Pipeline, Pipeline> finalPopulationPipeline = reproducedPopulationPipelines._1
+			.mergeWith(reproducedPopulationPipelines._2)    // Already evaluated.
 			.dieWhen(deathPredicate);
 
 		environment.logPopulation("dead", finalPopulationPipeline._1.extract());
@@ -76,11 +73,9 @@ public class DifferentialEvolutionStepWithEnergy<S extends Solution<?>> extends 
 	/**
 	 * Returns a reproduction strategy built on top of given operators.
 	 */
-	protected DifferentialEvolutionReproduction resolveReproductionStrategy() {
-		return DifferentialEvolutionReproduction.<S>builder()
-			.mutation(mutation)
-			.recombination(recombination)
-			.selection(selection)
+	protected DifferentialEvolutionReproduction resolveReproductionStrategy(final Environment environment) {
+		return reproductionStrategyBuilder
+			.workplaceID(environment.workplaceId())
 			.energyTransfer(asexualReproductionEnergyTransfer)
 			.build();
 	}

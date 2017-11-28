@@ -18,11 +18,14 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	private DifferentialEvolutionMutation<S> mutation;
 	private Recombination<S> recombination;
 	private Selection<S> selection;
-
 	private AsexualEnergyTransfer asexualReproductionEnergyTransfer;
 
+	private long workplaceID;
 
-	DifferentialEvolutionReproductionBuilder() { }
+
+	DifferentialEvolutionReproductionBuilder() {
+		workplaceID = -1;
+	}
 
 
 	/**
@@ -58,15 +61,23 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	}
 
 	/**
+	 * Adds a workplace ID to this builder.
+	 */
+	public DifferentialEvolutionReproductionBuilder<S> workplaceID(final long workplaceID) {
+		this.workplaceID = workplaceID;
+		return this;
+	}
+
+	/**
 	 * Returns a new instance of a {@link DifferentialEvolutionReproduction reproduction} strategy filled with the
 	 * operators set previously.
 	 */
 	public DifferentialEvolutionReproduction build() {
-		checkState(mutation != null && recombination != null && selection != null);
+		checkState(mutation != null && recombination != null && selection != null && 0 <= workplaceID);
 
 		return parentAgent -> {
 			DifferentialEvolutionReproductionPipeline<S> reproductionPipeline = DifferentialEvolutionReproductionPipeline.<S>on(parentAgent)
-				.mutate(mutation)
+				.mutate(mutation, workplaceID)
 				.recombine(recombination)
 				.select(selection);
 			if (asexualReproductionEnergyTransfer != null) {

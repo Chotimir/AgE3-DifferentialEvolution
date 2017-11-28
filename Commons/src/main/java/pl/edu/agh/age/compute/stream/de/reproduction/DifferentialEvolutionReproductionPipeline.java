@@ -73,8 +73,8 @@ public class DifferentialEvolutionReproductionPipeline<S extends Solution<?>> {
 	}
 
 
-	public DifferentialEvolutionReproductionPipeline<S> mutate(final DifferentialEvolutionMutation<S> mutation) {
-		return new DifferentialEvolutionReproductionPipeline<>(parentAgent, mutation.mutate((S) parentAgent.solution));
+	public DifferentialEvolutionReproductionPipeline<S> mutate(final DifferentialEvolutionMutation<S> mutation, final long workplaceID) {
+		return new DifferentialEvolutionReproductionPipeline<>(parentAgent, mutation.mutate((S) parentAgent.solution, workplaceID));
 	}
 
 	public DifferentialEvolutionReproductionPipeline<S> recombine(final Recombination<S> recombination) {

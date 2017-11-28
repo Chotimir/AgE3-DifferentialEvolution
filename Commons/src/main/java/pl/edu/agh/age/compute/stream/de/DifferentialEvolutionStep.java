@@ -6,10 +6,14 @@ import javaslang.collection.Set;
 import pl.edu.agh.age.compute.stream.Environment;
 import pl.edu.agh.age.compute.stream.Step;
 import pl.edu.agh.age.compute.stream.de.reproduction.DifferentialEvolutionReproduction;
+import pl.edu.agh.age.compute.stream.de.reproduction.DifferentialEvolutionReproductionBuilder;
 import pl.edu.agh.age.compute.stream.de.reproduction.mutation.DifferentialEvolutionMutation;
 import pl.edu.agh.age.compute.stream.de.reproduction.mutation.PopulationManager;
 import pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection;
-import pl.edu.agh.age.compute.stream.emas.*;
+import pl.edu.agh.age.compute.stream.emas.EmasAgent;
+import pl.edu.agh.age.compute.stream.emas.Pipeline;
+import pl.edu.agh.age.compute.stream.emas.PipelineUtils;
+import pl.edu.agh.age.compute.stream.emas.Predicates;
 import pl.edu.agh.age.compute.stream.emas.migration.MigrationParameters;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
@@ -27,12 +31,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<EmasAgent> {
 
-	protected final DifferentialEvolutionMutation<S> mutation;
-	protected final Recombination<S> recombination;
-	protected final Selection<S> selection;
-
+	protected final DifferentialEvolutionReproductionBuilder<S> reproductionStrategyBuilder;
 	protected final PopulationManager<EmasAgent> populationManager;
-	protected final PopulationEvaluator<EmasAgent> populationEvaluator;
 
 	protected final Comparator<EmasAgent> agentComparator;
 	protected final MigrationParameters migrationParameters;
@@ -45,19 +45,16 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 	 * @param mutation             A mutation operator employed by the Differential Evolution scheme.
 	 * @param recombination        A recombination operator employed by the Differential Evolution scheme.
 	 * @param selection            A selection operator employed by the Differential Evolution scheme.
-	 * @param populationEvaluator  An evaluator of agents composing a population.
 	 * @param agentComparator      A comparator of agents.
 	 * @param migrationParameters  Parameters of agents migration between workplaces.
 	 */
 	public DifferentialEvolutionStep(final DifferentialEvolutionMutation<S> mutation, final Recombination<S> recombination, final Selection<S> selection,
-									 final PopulationEvaluator<EmasAgent> populationEvaluator,
 									 final Comparator<EmasAgent> agentComparator, final MigrationParameters migrationParameters) {
-		this.mutation = requireNonNull(mutation);
-		this.recombination = requireNonNull(recombination);
-		this.selection = requireNonNull(selection);
-
+		reproductionStrategyBuilder = DifferentialEvolutionReproduction.<S>builder()
+			.mutation(requireNonNull(mutation))
+			.recombination(requireNonNull(recombination))
+			.selection(requireNonNull(selection));
 		populationManager = mutation.getPopulationManager();
-		this.populationEvaluator = requireNonNull(populationEvaluator);
 
 		this.agentComparator = requireNonNull(agentComparator);
 		this.migrationParameters = requireNonNull(migrationParameters);
@@ -69,14 +66,14 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 	 */
 	@Override
 	public List<EmasAgent> stepOn(final long stepNumber, final List<EmasAgent> population, final Environment environment) {
-		populationManager.setPopulation(population);
+		populationManager.setPopulation(population, environment.workplaceId());
 
-		final DifferentialEvolutionReproduction reproductionStrategy = resolveReproductionStrategy();
+		final DifferentialEvolutionReproduction reproductionStrategy = resolveReproductionStrategy(environment);
 		final Tuple2<Pipeline, Pipeline> reproducedPopulationPipelines =
 			PipelineUtils.extractPipelineTuple(population.map(reproductionStrategy));
 
 		final Pipeline parentAgentsPipeline = reproducedPopulationPipelines._1;
-		final Pipeline childAgentsPipeline = reproducedPopulationPipelines._2.evaluate(populationEvaluator);
+		final Pipeline childAgentsPipeline = reproducedPopulationPipelines._2;    // Already evaluated.
 
 		environment.logPopulation("dead", parentAgentsPipeline.extract());
 		return migrate(childAgentsPipeline, stepNumber, environment).extract();
@@ -86,11 +83,9 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 	/**
 	 * Returns a reproduction strategy built on top of given operators.
 	 */
-	protected DifferentialEvolutionReproduction resolveReproductionStrategy() {
-		return DifferentialEvolutionReproduction.<S>builder()
-			.mutation(mutation)
-			.recombination(recombination)
-			.selection(selection)
+	protected DifferentialEvolutionReproduction resolveReproductionStrategy(final Environment environment) {
+		return reproductionStrategyBuilder
+			.workplaceID(environment.workplaceId())
 			.build();
 	}
 
