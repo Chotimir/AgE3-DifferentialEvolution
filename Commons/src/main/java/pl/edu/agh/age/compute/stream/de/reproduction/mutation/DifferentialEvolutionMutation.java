@@ -1,7 +1,6 @@
 package pl.edu.agh.age.compute.stream.de.reproduction.mutation;
 
 import pl.edu.agh.age.compute.stream.emas.EmasAgent;
-import pl.edu.agh.age.compute.stream.emas.reproduction.mutation.Mutation;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author Bartłomiej Grochal
  */
-public abstract class DifferentialEvolutionMutation<S extends Solution<?>> implements Mutation<S> {
+public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 
 	protected final double mutationFactor;
 
@@ -30,17 +29,14 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> imple
 	}
 
 
-	public abstract S mutate();
-
 	/**
-	 * Please note that the Differential Evolution scheme does not require to modify a parent genotype by the mutation
-	 * operator. Therefore, the {@link Mutation#mutate(Solution)} method (included by convention) is shadowed by the
-	 * {@link #mutate()} method.
+	 * Performs a mutation according to the Differential Evolution scheme (returns a donor genotype derived from
+	 * neighboring genotypes).
+	 *
+	 * @param solution    A current genotype for which a Differential Evolution step is performed.
+	 * @param workplaceID An ID of a workplace containing the {@code solution} genotype.
 	 */
-	@Override
-	public S mutate(final S solution) {
-		return mutate();
-	}
+	public abstract S mutate(final S solution, final long workplaceID);
 
 	public PopulationManager<EmasAgent> getPopulationManager() {
 		return populationManager;
@@ -49,10 +45,11 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> imple
 
 	/**
 	 * Returns a list of given {@code size} composed of randomly chosen genotypes belonging to
-	 * {@link pl.edu.agh.age.compute.stream.Agent agents} forming a population held by the {@link #populationManager}.
+	 * {@link pl.edu.agh.age.compute.stream.Agent agents} forming a population held by the {@link #populationManager}
+	 * and identified by given {@code workplaceID}.
 	 */
-	protected <T> List<T> getRandomGenotypes(final int size) {
-		return populationManager.getRandom(size)
+	protected <T> List<T> getRandomGenotypes(final int size, final long workplaceID) {
+		return populationManager.getRandom(size, workplaceID)
 			.stream()
 			.map(agent -> (T) agent.solution.unwrap())
 			.collect(Collectors.toList());

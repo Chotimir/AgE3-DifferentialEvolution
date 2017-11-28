@@ -31,8 +31,8 @@ public class RandOneMutation extends AbstractMutation {
 	 * </ul>
 	 */
 	@Override
-	public DoubleVectorSolution mutate() {
-		final List<Array<Double>> randomGenotypes = getRandomGenotypes(3);
+	public DoubleVectorSolution mutate(final DoubleVectorSolution solution, final long workplaceID) {
+		final List<Array<Double>> randomGenotypes = getRandomGenotypes(3, workplaceID);
 
 		final Array<Double> donor = addVectors(randomGenotypes.get(0),
 			multiplyVectorByScalar(subtractVectors(randomGenotypes.get(1), randomGenotypes.get(2)), mutationFactor));
