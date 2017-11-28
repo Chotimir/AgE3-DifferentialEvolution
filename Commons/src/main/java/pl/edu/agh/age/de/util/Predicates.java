@@ -1,6 +1,6 @@
 package pl.edu.agh.age.de.util;
 
-import pl.edu.agh.age.compute.stream.emas.solution.Solution;
+import pl.edu.agh.age.compute.stream.emas.EmasAgent;
 
 import java.util.function.Predicate;
 
@@ -11,8 +11,8 @@ import java.util.function.Predicate;
  */
 public class Predicates {
 
-	public static Predicate<Solution<?>> always() {
-		return solution -> true;
+	public static Predicate<EmasAgent> always() {
+		return agent -> true;
 	}
 
 }
