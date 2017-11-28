@@ -19,6 +19,20 @@
 	<context:property-placeholder location="classpath:pl/edu/agh/age/de/common/common-config.properties"/>
 
 
+	<!-- Problem definition -->
+	<bean id="abstractProblemDefinition" class="pl.edu.agh.age.de.common.problem.DifferentialEvolutionProblem"
+		  abstract="true">
+		<constructor-arg name="testFunction" value="${de.problem.test-function}"/>
+		<constructor-arg name="problemSize" value="${de.problem.size}"/>
+	</bean>
+
+
+	<!-- Problem-specific beans -->
+	<bean id="populationManager" class="pl.edu.agh.age.compute.stream.de.reproduction.mutation.PopulationManager">
+		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>
+	</bean>
+
+
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
 	<bean id="evaluatorCounter" class="pl.edu.agh.age.compute.stream.problem.EvaluatorCounter"
 		  factory-method="simpleCounter"/>
@@ -37,6 +51,10 @@
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
 		<constructor-arg name="agentsCount" value="${de.population-generator.initial-size}"/>
 		<constructor-arg name="initialEnergy" value="${de.population-generator.initial-energy}"/>
+	</bean>
+
+	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
+		<constructor-arg ref="solutionEvaluator"/>
 	</bean>
 
 
@@ -62,6 +80,9 @@
 	<bean id="agentsRegistry" class="pl.edu.agh.age.compute.stream.emas.EmasBestAgentsRegistry">
 		<constructor-arg ref="agentComparator"/>
 	</bean>
+
+	<bean id="beforeStepAnalyzer" class="pl.edu.agh.age.compute.stream.BeforeStepAction"
+		  factory-method="simpleMerge"/>
 
 	<bean id="afterStepAnalyzer" class="pl.edu.agh.age.compute.stream.example.SampleAfterStepActionWithLogging"/>
 

@@ -23,26 +23,20 @@
 
 
 	<!-- Problem definition -->
-	<bean id="problemDefinition" class="pl.edu.agh.age.de.common.problem.DifferentialEvolutionProblem">
+	<bean id="problemDefinition" parent="abstractProblemDefinition">
 		<constructor-arg name="algorithm" value="${de.problem.algorithm}"/>
-		<constructor-arg name="testFunction" value="${de.problem.test-function}"/>
-		<constructor-arg name="problemSize" value="${de.problem.size}"/>
 	</bean>
 
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
-	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
-		<constructor-arg ref="solutionEvaluator"/>
-	</bean>
-
-	<bean id="recombinationManager" class="${de.recombination.class}">
-		<constructor-arg ref="solutionFactory"/>
-	</bean>
-
 	<bean id="mutationManager" class="${de.mutation.class}">
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
 		<constructor-arg name="mutationRate" value="${de.mutation.rate}"/>
 		<constructor-arg name="disturbanceRange" value="${de.mutation.disturbance-range}"/>
+	</bean>
+
+	<bean id="recombinationManager" class="${de.recombination.class}">
+		<constructor-arg ref="solutionFactory"/>
 	</bean>
 
 	<bean id="sexualReproductionEnergyTransfer" class="pl.edu.agh.age.compute.stream.emas.reproduction.transfer.EnergyTransfer"
@@ -80,9 +74,6 @@
 		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 	</bean>
 
-
-	<bean id="beforeStepAnalyzer" class="pl.edu.agh.age.compute.stream.BeforeStepAction"
-		  factory-method="simpleMerge"/>
 
 	<bean id="workplaceGenerator" class="pl.edu.agh.age.compute.stream.configuration.WorkplaceConfigurationGenerator">
 		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>

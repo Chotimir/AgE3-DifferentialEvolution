@@ -23,15 +23,9 @@
 
 
 	<!-- Problem definition -->
-	<bean id="problemDefinition" class="pl.edu.agh.age.de.common.problem.DifferentialEvolutionProblem">
+	<bean id="problemDefinition" parent="abstractProblemDefinition">
 		<constructor-arg name="algorithm" value="${de.problem.algorithm}"/>
-		<constructor-arg name="testFunction" value="${de.problem.test-function}"/>
-		<constructor-arg name="problemSize" value="${de.problem.size}"/>
 	</bean>
-
-
-	<!-- Problem-specific beans -->
-	<bean id="populationManager" class="pl.edu.agh.age.compute.stream.de.reproduction.mutation.PopulationManager"/>
 
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
@@ -39,10 +33,6 @@
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
 		<constructor-arg name="agentsCount" value="${de.population-generator.initial-size}"/>
 		<constructor-arg name="initialEnergy" value="#{ T(java.lang.Double).NaN }"/>
-	</bean>
-
-	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
-		<constructor-arg ref="solutionEvaluator"/>
 	</bean>
 
 	<bean id="mutationManager" class="${de.mutation.class}">
@@ -70,7 +60,6 @@
 		<constructor-arg name="mutation" ref="mutationManager"/>
 		<constructor-arg name="recombination" ref="recombinationManager"/>
 		<constructor-arg name="selection" ref="selectionManager"/>
-		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
 		<constructor-arg name="agentComparator" ref="agentComparator"/>
 		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 	</bean>
@@ -79,7 +68,6 @@
 		<constructor-arg name="mutation" ref="mutationManager"/>
 		<constructor-arg name="recombination" ref="recombinationManager"/>
 		<constructor-arg name="selection" ref="selectionManager"/>
-		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
 		<constructor-arg name="agentComparator" ref="agentComparator"/>
 		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 		<constructor-arg name="deathPredicate" ref="deathPredicate"/>
@@ -87,9 +75,6 @@
 		<constructor-arg name="asexualReproductionEnergyTransfer" ref="asexualReproductionEnergyTransfer"/>
 	</bean>
 
-
-	<bean id="beforeStepAnalyzer" class="pl.edu.agh.age.compute.stream.BeforeStepAction"
-		  factory-method="simpleMerge"/>
 
 	<bean id="workplaceGenerator" class="pl.edu.agh.age.compute.stream.configuration.WorkplaceConfigurationGenerator">
 		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>

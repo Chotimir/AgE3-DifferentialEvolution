@@ -23,16 +23,12 @@
 
 
 	<!-- Problem definition -->
-	<bean id="problemDefinition" class="pl.edu.agh.age.de.common.problem.DifferentialEvolutionProblem">
+	<bean id="problemDefinition" parent="abstractProblemDefinition">
 		<constructor-arg name="algorithm" value="${de.problem.algorithm}"/>
-		<constructor-arg name="testFunction" value="${de.problem.test-function}"/>
-		<constructor-arg name="problemSize" value="${de.problem.size}"/>
 	</bean>
 
 
 	<!-- Problem-specific beans -->
-	<bean id="populationManager" class="pl.edu.agh.age.compute.stream.de.reproduction.mutation.PopulationManager"/>
-
 	<bean id="differentialEvolutionMutation" class="${de.improvement.mutation.class}">
 		<constructor-arg name="populationManager" ref="populationManager"/>
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
@@ -47,30 +43,19 @@
 	<bean id="differentialEvolutionSelection" class="pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection"
 		  factory-method="${de.improvement.selection.method}"/>
 
+	<bean id="differentialEvolutionPredicate" class="${de.improvement.predicate.class}"
+		  factory-method="${de.improvement.predicate.method}"/>
+
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
-	<bean id="improvement" class="pl.edu.agh.age.compute.stream.de.reproduction.improvement.DifferentialEvolutionImprovement">
-		<constructor-arg name="mutation" ref="differentialEvolutionMutation"/>
-		<constructor-arg name="recombination" ref="differentialEvolutionRecombination"/>
-		<constructor-arg name="selection" ref="differentialEvolutionSelection"/>
-		<constructor-arg name="improvementPredicate">
-			<bean class="${de.improvement.predicate.class}" factory-method="${de.improvement.predicate.method}"/>
-		</constructor-arg>
-	</bean>
-
-	<bean id="populationEvaluator" class="${de.population-evaluator.class}">
-		<constructor-arg name="evaluator" ref="solutionEvaluator"/>
-		<constructor-arg name="improvement" ref="improvement"/>
-	</bean>
-
-	<bean id="recombinationManager" class="${de.recombination.class}">
-		<constructor-arg ref="solutionFactory"/>
-	</bean>
-
 	<bean id="mutationManager" class="${de.mutation.class}">
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
 		<constructor-arg name="mutationRate" value="${de.mutation.rate}"/>
 		<constructor-arg name="disturbanceRange" value="${de.mutation.disturbance-range}"/>
+	</bean>
+
+	<bean id="recombinationManager" class="${de.recombination.class}">
+		<constructor-arg ref="solutionFactory"/>
 	</bean>
 
 	<bean id="sexualReproductionEnergyTransfer" class="pl.edu.agh.age.compute.stream.emas.reproduction.transfer.EnergyTransfer"
@@ -94,24 +79,28 @@
 		<constructor-arg name="minimumAgentEnergy" value="${de.death.energy-threshold}"/>
 	</bean>
 
-	<bean id="stepFunction" class="pl.edu.agh.age.compute.stream.emas.EmasStep">
-		<constructor-arg name="fightAgentComparator" ref="fightAgentComparator"/>
-		<constructor-arg name="fightEnergyTransfer" ref="fightEnergyTransfer"/>
-		<constructor-arg name="recombination" ref="recombinationManager"/>
-		<constructor-arg name="mutation" ref="mutationManager"/>
-		<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
-		<constructor-arg name="deathPredicate" ref="deathPredicate"/>
-		<constructor-arg name="reproductionPredicate" ref="reproductionPredicate"/>
-		<constructor-arg name="sexualReproductionTransfer" ref="sexualReproductionEnergyTransfer"/>
-		<constructor-arg name="asexualReproductionTransfer" ref="asexualReproductionEnergyTransfer"/>
-		<constructor-arg name="agentComparator" ref="agentComparator"/>
-		<constructor-arg name="migrationParameters" ref="migrationParameters"/>
+	<bean id="stepFunction" class="pl.edu.agh.age.compute.stream.de.HybridEvolutionStep">
+		<constructor-arg name="mutation" ref="differentialEvolutionMutation"/>
+		<constructor-arg name="recombination" ref="differentialEvolutionRecombination"/>
+		<constructor-arg name="selection" ref="differentialEvolutionSelection"/>
+		<constructor-arg name="emasStep">
+			<bean class="pl.edu.agh.age.compute.stream.emas.EmasStep">
+				<constructor-arg name="fightAgentComparator" ref="fightAgentComparator"/>
+				<constructor-arg name="fightEnergyTransfer" ref="fightEnergyTransfer"/>
+				<constructor-arg name="recombination" ref="recombinationManager"/>
+				<constructor-arg name="mutation" ref="mutationManager"/>
+				<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
+				<constructor-arg name="deathPredicate" ref="deathPredicate"/>
+				<constructor-arg name="reproductionPredicate" ref="reproductionPredicate"/>
+				<constructor-arg name="sexualReproductionTransfer" ref="sexualReproductionEnergyTransfer"/>
+				<constructor-arg name="asexualReproductionTransfer" ref="asexualReproductionEnergyTransfer"/>
+				<constructor-arg name="agentComparator" ref="agentComparator"/>
+				<constructor-arg name="migrationParameters" ref="migrationParameters"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="differentialEvolutionPredicate" ref="differentialEvolutionPredicate"/>
 	</bean>
 
-
-	<bean id="beforeStepAnalyzer" class="pl.edu.agh.age.compute.stream.de.BeforeStepSimpleMergeWithPopulationManager">
-		<constructor-arg ref="populationManager"/>
-	</bean>
 
 	<bean id="workplaceGenerator" class="pl.edu.agh.age.compute.stream.configuration.WorkplaceConfigurationGenerator">
 		<constructor-arg name="workplacesCount" value="${de.migration.workplaces.count}"/>
