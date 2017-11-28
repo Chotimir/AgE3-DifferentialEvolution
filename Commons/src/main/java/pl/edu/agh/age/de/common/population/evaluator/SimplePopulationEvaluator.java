@@ -32,9 +32,7 @@ public class SimplePopulationEvaluator<S extends Solution<?>> implements Populat
 	public Seq<EmasAgent> evaluate(final Seq<EmasAgent> population) {
 		return population.map(agent -> {
 			final S solution = (S) agent.solution;
-			solution.updateFitness(evaluator.evaluate(solution));
-
-			return EmasAgent.create(agent.energy, solution);
+			return EmasAgent.create(agent.energy, solution.updateFitness(evaluator.evaluate(solution)));
 		});
 	}
 
