@@ -17,8 +17,7 @@ abstract class AbstractMutation extends DifferentialEvolutionMutation<DoubleVect
 
 
 	/**
-	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects belonging to
-	 *                        the initial population.
+	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects.
 	 */
 	AbstractMutation(final PopulationManager<EmasAgent> populationManager,
 					 final DoubleVectorSolutionFactory solutionFactory, final double mutationFactor) {

@@ -27,8 +27,7 @@ public class RandomCoordinatesRecombination implements Recombination<DoubleVecto
 
 
 	/**
-	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects belonging to
-	 *                        the initial population.
+	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects.
 	 * @param crossoverRatio  A portion of genes to be recombined.
 	 */
 	public RandomCoordinatesRecombination(final DoubleVectorSolutionFactory solutionFactory, final double crossoverRatio) {
