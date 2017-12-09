@@ -79,9 +79,8 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	public List<EmasAgent> stepOn(final long stepNumber, final List<EmasAgent> population, final Environment environment) {
 		populationManager.setPopulation(population, environment.workplaceId());
 		final List<EmasAgent> afterStepPopulation = emasStep.stepOn(stepNumber, population, environment);
-		final DifferentialEvolutionReproduction differentialEvolutionStep = differentialEvolutionStepBuilder
-			.workplaceID(environment.workplaceId())
-			.build();
+		final DifferentialEvolutionReproduction differentialEvolutionStep =
+			differentialEvolutionStepBuilder.build(environment.workplaceId());
 
 		final Tuple2<List<EmasAgent>, List<EmasAgent>> populationByPredicate =
 			afterStepPopulation.partition(differentialEvolutionPredicate);

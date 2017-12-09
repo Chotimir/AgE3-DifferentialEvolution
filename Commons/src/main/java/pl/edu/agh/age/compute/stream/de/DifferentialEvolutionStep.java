@@ -29,13 +29,13 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Bartłomiej Grochal
  */
-public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<EmasAgent> {
+public final class DifferentialEvolutionStep<S extends Solution<?>> implements Step<EmasAgent> {
 
-	protected final DifferentialEvolutionReproductionBuilder<S> reproductionStrategyBuilder;
-	protected final PopulationManager<EmasAgent> populationManager;
+	private final DifferentialEvolutionReproductionBuilder<S> reproductionStrategyBuilder;
+	private final PopulationManager<EmasAgent> populationManager;
 
-	protected final Comparator<EmasAgent> agentComparator;
-	protected final MigrationParameters migrationParameters;
+	private final Comparator<EmasAgent> agentComparator;
+	private final MigrationParameters migrationParameters;
 
 
 	/**
@@ -68,7 +68,8 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 	public List<EmasAgent> stepOn(final long stepNumber, final List<EmasAgent> population, final Environment environment) {
 		populationManager.setPopulation(population, environment.workplaceId());
 
-		final DifferentialEvolutionReproduction reproductionStrategy = resolveReproductionStrategy(environment);
+		final DifferentialEvolutionReproduction reproductionStrategy =
+			reproductionStrategyBuilder.build(environment.workplaceId());
 		final Tuple2<Pipeline, Pipeline> reproducedPopulationPipelines =
 			PipelineUtils.extractPipelineTuple(population.map(reproductionStrategy));
 
@@ -81,18 +82,9 @@ public class DifferentialEvolutionStep<S extends Solution<?>> implements Step<Em
 
 
 	/**
-	 * Returns a reproduction strategy built on top of given operators.
-	 */
-	protected DifferentialEvolutionReproduction resolveReproductionStrategy(final Environment environment) {
-		return reproductionStrategyBuilder
-			.workplaceID(environment.workplaceId())
-			.build();
-	}
-
-	/**
 	 * Performs a migration of agents between workplaces.
 	 */
-	protected Pipeline migrate(final Pipeline population, final long stepNumber, final Environment environment) {
+	private Pipeline migrate(final Pipeline population, final long stepNumber, final Environment environment) {
 		if (!shouldMigrate(stepNumber)) {
 			return population;
 		}

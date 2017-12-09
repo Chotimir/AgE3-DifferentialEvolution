@@ -3,7 +3,6 @@ package pl.edu.agh.age.compute.stream.de.reproduction;
 import pl.edu.agh.age.compute.stream.de.reproduction.mutation.DifferentialEvolutionMutation;
 import pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
-import pl.edu.agh.age.compute.stream.emas.reproduction.transfer.AsexualEnergyTransfer;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -18,14 +17,9 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	private DifferentialEvolutionMutation<S> mutation;
 	private Recombination<S> recombination;
 	private Selection<S> selection;
-	private AsexualEnergyTransfer asexualReproductionEnergyTransfer;
-
-	private long workplaceID;
 
 
-	DifferentialEvolutionReproductionBuilder() {
-		workplaceID = -1;
-	}
+	DifferentialEvolutionReproductionBuilder() { }
 
 
 	/**
@@ -53,26 +47,11 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 	}
 
 	/**
-	 * Adds an energy transfer strategy to this builder.
-	 */
-	public DifferentialEvolutionReproductionBuilder<S> energyTransfer(final AsexualEnergyTransfer asexualReproductionEnergyTransfer) {
-		this.asexualReproductionEnergyTransfer = asexualReproductionEnergyTransfer;
-		return this;
-	}
-
-	/**
-	 * Adds a workplace ID to this builder.
-	 */
-	public DifferentialEvolutionReproductionBuilder<S> workplaceID(final long workplaceID) {
-		this.workplaceID = workplaceID;
-		return this;
-	}
-
-	/**
 	 * Returns a new instance of a {@link DifferentialEvolutionReproduction reproduction} strategy filled with the
-	 * operators set previously.
+	 * operators set previously. Also, the {@code workplaceID} parameter must be fulfilled to indicate which population
+	 * should be looked up when employing the {@link DifferentialEvolutionMutation Mutation} operator.
 	 */
-	public DifferentialEvolutionReproduction build() {
+	public DifferentialEvolutionReproduction build(final long workplaceID) {
 		checkState(mutation != null && recombination != null && selection != null && 0 <= workplaceID);
 
 		return parentAgent -> {
@@ -80,11 +59,6 @@ public class DifferentialEvolutionReproductionBuilder<S extends Solution<?>> {
 				.mutate(mutation, workplaceID)
 				.recombine(recombination)
 				.select(selection);
-			if (asexualReproductionEnergyTransfer != null) {
-				reproductionPipeline = reproductionPipeline.transferEnergy(asexualReproductionEnergyTransfer);
-			} else {
-				reproductionPipeline = reproductionPipeline.createChildWithNoEnergy();
-			}
 
 			return reproductionPipeline.extract();
 		};
