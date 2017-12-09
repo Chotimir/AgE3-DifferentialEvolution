@@ -11,38 +11,37 @@ import java.util.stream.IntStream;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * This class implements the mutation operator for Classical EMAS Algorithm. This mutation strategy draws approximately
- * {@link #mutationRate} percent of genes and performs random disturbance of selected genes' values.
+ * This class contains common implementations for all the the mutation operator employed by the Classical EMAS Algorithm.
+ * These mutation strategies strategy draw approximately {@link #mutationRate} percent of genes and perform random
+ * disturbance of selected genes' values.
  *
  * @author Bartłomiej Grochal
  */
-public class RandomDisturbanceMutation implements Mutation<DoubleVectorSolution> {
+public abstract class AbstractDisturbanceMutation implements Mutation<DoubleVectorSolution> {
+
+	final Random randomGenerator;
 
 	private final DoubleVectorSolutionFactory solutionFactory;
-	private final Random randomGenerator;
-
 	private final double mutationRate;
-	private final double disturbanceRange;
 
 
 	/**
-	 * @param mutationRate     A portion of genes to be mutated.
-	 * @param disturbanceRange A range of disturbance of a gene's value (i.e. for a gene with given <b>value</b>, its
-	 *                         disturbance is a random number not lesser than <b>value - disturbanceRange</b> and not
-	 *                         greater than <b>value + disturbanceRange</b>).
+	 * @param solutionFactory A factory object creating new {@link DoubleVectorSolution solution} objects.
+	 * @param mutationRate    A portion of genes to be mutated.
 	 */
-	public RandomDisturbanceMutation(final DoubleVectorSolutionFactory solutionFactory, final double mutationRate,
-									 final double disturbanceRange) {
+	public AbstractDisturbanceMutation(DoubleVectorSolutionFactory solutionFactory, double mutationRate) {
 		checkArgument(0 < mutationRate && 1 >= mutationRate);
-		checkArgument(0 < disturbanceRange);
 
-		this.solutionFactory = solutionFactory;
 		randomGenerator = ThreadLocalRandom.current();
-
+		this.solutionFactory = solutionFactory;
 		this.mutationRate = mutationRate;
-		this.disturbanceRange = disturbanceRange;
 	}
 
+
+	/**
+	 * Draws a random number belonging to given distribution, which will be used as a disturbance value.
+	 */
+	public abstract double drawDisturbance();
 
 	/**
 	 * Performs a mutation of a genotype belonging to given {@code solution}.
@@ -65,9 +64,7 @@ public class RandomDisturbanceMutation implements Mutation<DoubleVectorSolution>
 	 * Calculates a new value for the mutated gene.
 	 */
 	private double calculateDisturbance(final double value) {
-		// TODO: Trim the new value to the boundaries of the search space.
-		double disturbance = disturbanceRange * (2 * randomGenerator.nextDouble() - 1);
-		return value + disturbance;
+		return value + drawDisturbance();
 	}
 
 }

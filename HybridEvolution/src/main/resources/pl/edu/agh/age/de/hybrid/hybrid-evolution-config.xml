@@ -48,10 +48,16 @@
 
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
-	<bean id="mutationManager" class="${de.mutation.class}">
+	<bean id="uniformMutationManager" class="${de.mutation.uniform.class}">
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
 		<constructor-arg name="mutationRate" value="${de.mutation.rate}"/>
-		<constructor-arg name="disturbanceRange" value="${de.mutation.disturbance-range}"/>
+		<constructor-arg name="disturbanceRange" value="${de.mutation.uniform.disturbance-range}"/>
+	</bean>
+
+	<bean id="gaussianMutationManager" class="${de.mutation.gaussian.class}">
+		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
+		<constructor-arg name="mutationRate" value="${de.mutation.rate}"/>
+		<constructor-arg name="standardDeviation" value="${de.mutation.gaussian.standard-deviation}"/>
 	</bean>
 
 	<bean id="recombinationManager" class="${de.recombination.class}">
@@ -88,7 +94,7 @@
 				<constructor-arg name="fightAgentComparator" ref="fightAgentComparator"/>
 				<constructor-arg name="fightEnergyTransfer" ref="fightEnergyTransfer"/>
 				<constructor-arg name="recombination" ref="recombinationManager"/>
-				<constructor-arg name="mutation" ref="mutationManager"/>
+				<constructor-arg name="mutation" ref="${de.mutation.bean}"/>
 				<constructor-arg name="populationEvaluator" ref="populationEvaluator"/>
 				<constructor-arg name="deathPredicate" ref="deathPredicate"/>
 				<constructor-arg name="reproductionPredicate" ref="reproductionPredicate"/>

@@ -18,14 +18,14 @@ import static org.mockito.Mockito.when;
 import static pl.edu.agh.age.TestUtils.ACCURACY;
 
 /**
- * This class contains tests for the {@link RandomDisturbanceMutation} class.
+ * This class contains tests for the {@link UniformDisturbanceMutation} class.
  *
  * @author Bartłomiej Grochal
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RandomDisturbanceMutationTest {
+public class UniformDisturbanceMutationTest {
 
-	private RandomDisturbanceMutation mutation;
+	private UniformDisturbanceMutation mutation;
 
 	@Mock private DoubleVectorSolutionFactory solutionFactory;
 	@Mock private Random randomGenerator;
@@ -33,7 +33,7 @@ public class RandomDisturbanceMutationTest {
 
 	@Before
 	public void setUp() throws NoSuchFieldException, IllegalAccessException {
-		mutation = new RandomDisturbanceMutation(solutionFactory, 0.5d, 1.0d);
+		mutation = new UniformDisturbanceMutation(solutionFactory, 0.5d, 1.0d);
 		TestUtils.injectMockToField(mutation, randomGenerator, "randomGenerator");
 	}
 
