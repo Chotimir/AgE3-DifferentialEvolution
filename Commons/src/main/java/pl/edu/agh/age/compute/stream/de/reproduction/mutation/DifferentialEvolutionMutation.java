@@ -6,6 +6,8 @@ import pl.edu.agh.age.compute.stream.emas.solution.Solution;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * This class implements the general behavior of the mutation operator employed by the Differential Evolution scheme.
  *
@@ -24,6 +26,8 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 	 * @param mutationFactor    A scalar value used to calculate a donor vector by the Differential Evolution scheme.
 	 */
 	public DifferentialEvolutionMutation(final PopulationManager<EmasAgent> populationManager, final double mutationFactor) {
+		checkArgument(0 < mutationFactor);
+
 		this.populationManager = populationManager;
 		this.mutationFactor = mutationFactor;
 	}

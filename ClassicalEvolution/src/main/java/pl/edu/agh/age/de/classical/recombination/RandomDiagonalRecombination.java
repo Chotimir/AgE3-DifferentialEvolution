@@ -1,14 +1,15 @@
 package pl.edu.agh.age.de.classical.recombination;
 
+import javaslang.collection.Array;
 import pl.edu.agh.age.compute.stream.emas.reproduction.recombination.Recombination;
 import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
 import pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static pl.edu.agh.age.de.util.VectorUtil.*;
 
 /**
  * This class implements the recombination operator for Classical EMAS Algorithm. This recombination strategy draws a
@@ -40,17 +41,12 @@ public class RandomDiagonalRecombination implements Recombination<DoubleVectorSo
 		checkArgument(firstSolution.length() == secondSolution.length());
 
 		final double mutationVectorScale = randomGenerator.nextDouble();
-		final double[] mutationVector = IntStream.range(0, firstSolution.length())
-			.sorted()
-			.mapToDouble(index -> mutationVectorScale * (secondSolution.values()[index] - firstSolution.values()[index]))
-			.toArray();
 
-		final double[] offspringGenotype = IntStream.range(0, mutationVector.length)
-			.sorted()
-			.mapToDouble(index -> firstSolution.values()[index] + mutationVector[index])
-			.toArray();
+		final Array<Double> mutationVector =
+			multiplyVectorByScalar(subtractVectors(secondSolution.unwrap(), firstSolution.unwrap()), mutationVectorScale);
+		final Array<Double> offspringGenotype = addVectors(firstSolution.unwrap(), mutationVector);
 
-		return solutionFactory.create(offspringGenotype);
+		return solutionFactory.create(convertToPrimitiveDoubleArray(offspringGenotype));
 	}
 
 }
