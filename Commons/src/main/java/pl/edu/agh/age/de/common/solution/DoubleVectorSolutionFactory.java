@@ -3,6 +3,7 @@ package pl.edu.agh.age.de.common.solution;
 import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
 import pl.edu.agh.age.compute.stream.problem.Evaluator;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -49,7 +50,7 @@ public class DoubleVectorSolutionFactory {
 	 * fitness} value.
 	 */
 	public DoubleVectorSolution create(final double[] genes, final double fitness) {
-		return new DoubleVectorSolution(genes, fitness);
+		return new DoubleVectorSolution(trimGenes(genes), fitness);
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class DoubleVectorSolutionFactory {
 	 * the {@link #evaluator}.
 	 */
 	public DoubleVectorSolution create(final double[] genes) {
-		final DoubleVectorSolution solution = new DoubleVectorSolution(genes);
+		final DoubleVectorSolution solution = new DoubleVectorSolution(trimGenes(genes));
 		return solution.updateFitness(evaluator.evaluate(solution));
 	}
 
@@ -67,6 +68,14 @@ public class DoubleVectorSolutionFactory {
 	 */
 	public DoubleVectorSolution createRandom() {
 		return create(randomGenerator.doubles(problemSize, minimalValue, maximalValue).toArray());
+	}
+
+
+	private double[] trimGenes(final double[] genes) {
+		return Arrays.stream(genes)
+			.map(gene -> Double.compare(gene, minimalValue) < 0 ? minimalValue :
+                         Double.compare(gene, maximalValue) > 0 ? maximalValue : gene)
+			.toArray();
 	}
 
 }
