@@ -38,7 +38,12 @@
 	<bean id="mutationManager" class="${de.mutation.class}">
 		<constructor-arg name="populationManager" ref="populationManager"/>
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
-		<constructor-arg name="mutationFactor" value="${de.mutation.factor}"/>
+		<constructor-arg name="mutationFactors">
+			<array>
+				<value type="double">${de.mutation.factor-first}</value>
+				<value type="double">${de.mutation.factor-second}</value>
+			</array>
+		</constructor-arg>
 	</bean>
 
 	<bean id="recombinationManager" class="${de.recombination.class}">

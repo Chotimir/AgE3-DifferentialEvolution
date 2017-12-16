@@ -5,7 +5,7 @@ import pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * This class implements the Random Disturbance Mutation algorithm, where {@link #drawDisturbance) disturbance} values
+ * This class implements the Random Disturbance Mutation algorithm, where {@link #drawDisturbance disturbance} values
  * are drawn from the uniform distribution on the interval [-{@link #disturbanceRange}, {@link #disturbanceRange}].
  *
  * @author Bartłomiej Grochal

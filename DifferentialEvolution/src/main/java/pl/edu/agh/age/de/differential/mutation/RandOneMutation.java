@@ -18,8 +18,8 @@ import static pl.edu.agh.age.de.util.VectorUtil.*;
 public class RandOneMutation extends AbstractMutation {
 
 	public RandOneMutation(final PopulationManager<EmasAgent> populationManager,
-						   final DoubleVectorSolutionFactory solutionFactory, final double mutationFactor) {
-		super(populationManager, solutionFactory, mutationFactor);
+						   final DoubleVectorSolutionFactory solutionFactory, final double[] mutationFactors) {
+		super(populationManager, solutionFactory, mutationFactors);
 	}
 
 
@@ -27,7 +27,7 @@ public class RandOneMutation extends AbstractMutation {
 	 * Returns a donor vector being a sum of two vectors:
 	 * <ul>
 	 * <li>a randomly chosen one;</li>
-	 * <li>a difference of two randomly chosen vectors scaled by the {@link #mutationFactor}.</li>
+	 * <li>a difference of two randomly chosen vectors scaled by the {@link #mutationFactors mutation factor}.</li>
 	 * </ul>
 	 */
 	@Override
@@ -35,7 +35,7 @@ public class RandOneMutation extends AbstractMutation {
 		final List<Array<Double>> randomGenotypes = getRandomGenotypes(3, workplaceID);
 
 		final Array<Double> donor = addVectors(randomGenotypes.get(0),
-			multiplyVectorByScalar(subtractVectors(randomGenotypes.get(1), randomGenotypes.get(2)), mutationFactor));
+			multiplyVectorByScalar(subtractVectors(randomGenotypes.get(1), randomGenotypes.get(2)), mutationFactors[0]));
 		return solutionFactory.create(convertToPrimitiveDoubleArray(donor));
 	}
 

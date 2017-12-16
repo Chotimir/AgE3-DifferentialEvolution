@@ -3,6 +3,7 @@ package pl.edu.agh.age.compute.stream.de.reproduction.mutation;
 import pl.edu.agh.age.compute.stream.emas.EmasAgent;
 import pl.edu.agh.age.compute.stream.emas.solution.Solution;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 
-	protected final double mutationFactor;
+	protected final double[] mutationFactors;
 
 	private final PopulationManager<EmasAgent> populationManager;
 
@@ -23,13 +24,16 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 	/**
 	 * @param populationManager An object containing a list of {@link pl.edu.agh.age.compute.stream.Agent agents}
 	 *                          composing current population.
-	 * @param mutationFactor    A scalar value used to calculate a donor vector by the Differential Evolution scheme.
+	 * @param mutationFactors   Scalar values (usually one or two) used to calculate a donor vector by the Differential
+	 *                          Evolution scheme.
 	 */
-	public DifferentialEvolutionMutation(final PopulationManager<EmasAgent> populationManager, final double mutationFactor) {
-		checkArgument(0 < mutationFactor);
+	public DifferentialEvolutionMutation(final PopulationManager<EmasAgent> populationManager, final double[] mutationFactors) {
+		checkArgument(0 < mutationFactors.length);
+		checkArgument(0 < mutationFactors[0]);
+		Arrays.stream(mutationFactors).skip(1).forEach(mutationFactor -> checkArgument(0 <= mutationFactor));
 
 		this.populationManager = populationManager;
-		this.mutationFactor = mutationFactor;
+		this.mutationFactors = mutationFactors;
 	}
 
 

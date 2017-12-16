@@ -32,7 +32,12 @@
 	<bean id="differentialEvolutionMutation" class="${de.improvement.mutation.class}">
 		<constructor-arg name="populationManager" ref="populationManager"/>
 		<constructor-arg name="solutionFactory" ref="solutionFactory"/>
-		<constructor-arg name="mutationFactor" value="${de.improvement.mutation.factor}"/>
+		<constructor-arg name="mutationFactors">
+			<array>
+				<value type="double">${de.improvement.mutation.factor-first}</value>
+				<value type="double">${de.improvement.mutation.factor-second}</value>
+			</array>
+		</constructor-arg>
 	</bean>
 
 	<bean id="differentialEvolutionRecombination" class="${de.improvement.recombination.class}">
