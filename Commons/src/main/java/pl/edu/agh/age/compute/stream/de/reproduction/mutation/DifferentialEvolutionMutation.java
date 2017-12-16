@@ -63,4 +63,11 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 			.collect(Collectors.toList());
 	}
 
+	/**
+	 * Returns a genotype with the lowest fitness value belonging to an {@link pl.edu.agh.age.compute.stream.Agent
+	 * agent} living in a population held by the {@link #populationManager} and identified by given {@code workplaceID}.
+	 */
+	protected <T> T getBestGenotype(final long workplaceID) {
+		return (T) populationManager.getBest(workplaceID).solution.unwrap();
+	}
 }

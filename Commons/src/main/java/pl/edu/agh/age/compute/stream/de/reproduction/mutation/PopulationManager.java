@@ -1,6 +1,8 @@
 package pl.edu.agh.age.compute.stream.de.reproduction.mutation;
 
 import pl.edu.agh.age.compute.stream.Agent;
+import pl.edu.agh.age.compute.stream.emas.EmasAgent;
+import pl.edu.agh.age.compute.stream.emas.EmasAgentComparators;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,22 @@ public class PopulationManager<T extends Agent> {
 			.limit(size)
 			.mapToObj(population::get)
 			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns an {@link EmasAgent} with the lowest fitness value belonging to a current {@link #populationByWorkplace
+	 * population} living on a workplace with given {@code workplaceID}.
+	 */
+	public synchronized EmasAgent getBest(final long workplaceID) {
+		checkArgument(0 <= workplaceID && populationByWorkplace.containsKey(workplaceID));
+		final List<T> population = populationByWorkplace.get(workplaceID);
+
+		checkArgument(0 < population.size());
+		return population.stream()
+			.map(agent -> (EmasAgent) agent)
+			.sorted(EmasAgentComparators.lowerFitness().reversed())
+			.findFirst()
+			.get();
 	}
 
 	public synchronized void setPopulation(final List<T> population, final long workplaceID) {
