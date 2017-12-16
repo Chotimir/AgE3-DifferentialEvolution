@@ -30,7 +30,8 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	private final PopulationManager<EmasAgent> populationManager;
 
 	private final EmasStep<S> emasStep;
-	private final Predicate<EmasAgent> differentialEvolutionPredicate;
+	private final Predicate<EmasAgent> agentsSelectionPredicate;
+	private final Predicate<Long> differentialEvolutionPredicate;
 
 
 	/**
@@ -38,10 +39,13 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	 * @param recombination                  A recombination operator employed by the Differential Evolution scheme.
 	 * @param selection                      A selection operator employed by the Differential Evolution scheme.
 	 * @param emasStep                       An implementation of a step performed by the Classical (EMAS) Algorithm.
+	 * @param agentsSelectionPredicate       A predicate testing whether given {@link EmasAgent agent} should perform a
+	 *                                       Differential Evolution step.
 	 * @param differentialEvolutionPredicate A predicate testing whether a Differential Evolution step will be performed.
 	 */
 	public HybridEvolutionStep(final DifferentialEvolutionMutation<S> mutation, final Recombination<S> recombination, final Selection<S> selection,
-							   final EmasStep<S> emasStep, final Predicate<EmasAgent> differentialEvolutionPredicate) {
+							   final EmasStep<S> emasStep, final Predicate<EmasAgent> agentsSelectionPredicate,
+							   final Predicate<Long> differentialEvolutionPredicate) {
 		differentialEvolutionStepBuilder = DifferentialEvolutionReproduction.<S>builder()
 			.mutation(requireNonNull(mutation))
 			.recombination(requireNonNull(recombination))
@@ -49,6 +53,7 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 		populationManager = mutation.getPopulationManager();
 
 		this.emasStep = requireNonNull(emasStep);
+		this.agentsSelectionPredicate = requireNonNull(agentsSelectionPredicate);
 		this.differentialEvolutionPredicate = requireNonNull(differentialEvolutionPredicate);
 	}
 
@@ -79,11 +84,15 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	public List<EmasAgent> stepOn(final long stepNumber, final List<EmasAgent> population, final Environment environment) {
 		populationManager.setPopulation(population, environment.workplaceId());
 		final List<EmasAgent> afterStepPopulation = emasStep.stepOn(stepNumber, population, environment);
+
+		if (!differentialEvolutionPredicate.test(stepNumber)) {
+			return afterStepPopulation;
+		}
 		final DifferentialEvolutionReproduction differentialEvolutionStep =
 			differentialEvolutionStepBuilder.build(environment.workplaceId());
 
 		final Tuple2<List<EmasAgent>, List<EmasAgent>> populationByPredicate =
-			afterStepPopulation.partition(differentialEvolutionPredicate);
+			afterStepPopulation.partition(agentsSelectionPredicate);
 		return populationByPredicate._1
 			.map(differentialEvolutionStep)
 			.map(parentAndChild -> parentAndChild._1.withSolution(parentAndChild._2.solution))    // Already evaluated.

@@ -5,14 +5,18 @@ import pl.edu.agh.age.compute.stream.emas.EmasAgent;
 import java.util.function.Predicate;
 
 /**
- * This class contains implementations of the {@link Predicate} interface.
+ * This interface contains implementations of the {@link Predicate} interface.
  *
  * @author Bartłomiej Grochal
  */
-public class Predicates {
+public interface Predicates {
 
-	public static Predicate<EmasAgent> always() {
+	static Predicate<EmasAgent> always() {
 		return agent -> true;
+	}
+
+	static Predicate<Long> everyIterations(final long iterations) {
+		return iteration -> (iteration % iterations) == 0;
 	}
 
 }

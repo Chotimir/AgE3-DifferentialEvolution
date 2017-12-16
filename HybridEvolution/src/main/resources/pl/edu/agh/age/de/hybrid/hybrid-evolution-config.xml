@@ -48,9 +48,13 @@
 	<bean id="differentialEvolutionSelection" class="pl.edu.agh.age.compute.stream.de.reproduction.selection.Selection"
 		  factory-method="${de.improvement.selection.method}"/>
 
-	<bean id="differentialEvolutionPredicate" class="${de.improvement.predicate.class}"
-		  factory-method="${de.improvement.predicate.method}"/>
+	<bean id="agentsSelectionPredicate" class="${de.improvement.predicate.agents-selection.class}"
+		  factory-method="${de.improvement.predicate.agents-selection.method}"/>
 
+	<bean id="differentialEvolutionPredicate" class="${de.improvement.predicate.evolution.class}"
+		  factory-method="${de.improvement.predicate.evolution.method}">
+		<constructor-arg name="iterations" value="${de.improvement.predicate.evolution.method.arg-iterations}"/>
+	</bean>
 
 	<!-- EMAS platform configuration related to the Differential Evolution problem -->
 	<bean id="uniformMutationManager" class="${de.mutation.uniform.class}">
@@ -109,6 +113,7 @@
 				<constructor-arg name="migrationParameters" ref="migrationParameters"/>
 			</bean>
 		</constructor-arg>
+		<constructor-arg name="agentsSelectionPredicate" ref="agentsSelectionPredicate"/>
 		<constructor-arg name="differentialEvolutionPredicate" ref="differentialEvolutionPredicate"/>
 	</bean>
 
