@@ -37,8 +37,8 @@ public class BestTwoMutation extends AbstractMutation {
 		final List<Array<Double>> randomGenotypes = getRandomGenotypes(4, workplaceID);
 
 		final Array<Double> donor = addVectors(bestGenotype, multiplyVectorByScalar(
-			addVectors(subtractVectors(randomGenotypes.get(1), randomGenotypes.get(2)),
-				       subtractVectors(randomGenotypes.get(3), randomGenotypes.get(4))),
+			addVectors(subtractVectors(randomGenotypes.get(0), randomGenotypes.get(1)),
+				       subtractVectors(randomGenotypes.get(2), randomGenotypes.get(3))),
 			mutationFactors[0]));
 		return solutionFactory.create(convertToPrimitiveDoubleArray(donor));
 	}

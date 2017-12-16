@@ -39,8 +39,8 @@ public class CurrentToBestOneMutation extends AbstractMutation {
 		final List<Array<Double>> randomGenotypes = getRandomGenotypes(2, workplaceID);
 
 		final Array<Double> donor = addVectors(currentGenotype, addVectors(
-			multiplyVectorByScalar(subtractVectors(randomGenotypes.get(1), randomGenotypes.get(2)), mutationFactors[0]),
-			multiplyVectorByScalar(subtractVectors(bestGenotype, randomGenotypes.get(0)), mutationFactors[1])));
+			multiplyVectorByScalar(subtractVectors(randomGenotypes.get(0), randomGenotypes.get(1)), mutationFactors[0]),
+			multiplyVectorByScalar(subtractVectors(bestGenotype, currentGenotype), mutationFactors[1])));
 		return solutionFactory.create(convertToPrimitiveDoubleArray(donor));
 	}
 
