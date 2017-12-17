@@ -7,6 +7,8 @@ You need to have the following tools installed and configured:
  - Java 1.8
  - Gradle
 
+If you want to run the logs evaluation script, it is also necessary to have the Python 3 and pip installed.
+
 ## Usage
 Open one of the sub-directories in order to run the specific algorithm.
 

@@ -24,3 +24,15 @@ not deployed yet. In order to run this repository, follow these steps:
     ```
     Please note that the algorithm configuration is defined in `*.properties` and `*.xml` files given by the program 
     arguments (see the command above).
+
+## Visualisation
+In order to evaluate multiple `*.log` files produced by the Classical Evolution algorithm, run the Python script placed
+under `Commons/src/main/resources/visualisation`. Install all required dependencies by typing:
+```
+pip3 install -r requiremments.txt
+```
+Then, run the evaluation script by:
+```
+python3 visualisation.py [BASE_DIR]
+```
+where `[BASE_DIR]` is the absolute path to this (i.e. ClassicalEvolution) repository.
