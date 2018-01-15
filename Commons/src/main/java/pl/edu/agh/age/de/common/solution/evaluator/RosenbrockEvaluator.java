@@ -25,6 +25,7 @@ public class RosenbrockEvaluator extends AbstractEvaluator {
 	/**
 	 * Calculates a value of the Rosenbrock function at given point represented by {@code genes}.
 	 */
+	@Override
 	double evaluate(final Array<Double> genes) {
 		checkArgument(1 < genes.length());
 
