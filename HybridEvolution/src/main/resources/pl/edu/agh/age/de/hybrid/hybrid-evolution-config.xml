@@ -35,7 +35,6 @@
 		<constructor-arg name="mutationFactors">
 			<array>
 				<value type="double">${de.improvement.mutation.factor-first}</value>
-				<value type="double">${de.improvement.mutation.factor-second}</value>
 			</array>
 		</constructor-arg>
 	</bean>
