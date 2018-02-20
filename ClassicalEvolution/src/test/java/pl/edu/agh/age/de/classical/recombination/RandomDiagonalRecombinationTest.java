@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.edu.agh.age.TestUtils;
 import pl.edu.agh.age.compute.stream.emas.solution.DoubleVectorSolution;
+import pl.edu.agh.age.de.classical.recombination.uniform.RandomDiagonalRecombination;
 import pl.edu.agh.age.de.common.solution.DoubleVectorSolutionFactory;
 
 import java.util.Random;
