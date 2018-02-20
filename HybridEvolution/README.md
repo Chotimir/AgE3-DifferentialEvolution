@@ -36,4 +36,5 @@ Then, run the evaluation script by:
 ```
 python3 visualisation.py [BASE_DIR]
 ```
-where `[BASE_DIR]` is the absolute path to this (i.e. HybridEvolution) repository.
+where `[BASE_DIR]` is the absolute path to a directory containing both `*.log` files and configuration (i.e. `*.xml` and
+`*.properties`) files used for customization of the Hybrid Algorithm.
