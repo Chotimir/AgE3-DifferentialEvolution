@@ -35,6 +35,7 @@
 		<constructor-arg name="mutationFactors">
 			<array>
 				<value type="double">${de.improvement.mutation.factor-first}</value>
+				<value type="double">${de.improvement.mutation.factor-second}</value>
 			</array>
 		</constructor-arg>
 	</bean>
@@ -48,7 +49,9 @@
 		  factory-method="${de.improvement.selection.method}"/>
 
 	<bean id="agentsSelectionPredicate" class="${de.improvement.predicate.agents-selection.class}"
-		  factory-method="${de.improvement.predicate.agents-selection.method}"/>
+		  factory-method="${de.improvement.predicate.agents-selection.method}">
+		<constructor-arg name="energy" value="${de.improvement.predicate.agents-selection.method.arg-energy}"/>
+	</bean>
 
 	<bean id="differentialEvolutionPredicate" class="${de.improvement.predicate.evolution.class}"
 		  factory-method="${de.improvement.predicate.evolution.method}">
@@ -114,6 +117,7 @@
 		</constructor-arg>
 		<constructor-arg name="agentsSelectionPredicate" ref="agentsSelectionPredicate"/>
 		<constructor-arg name="differentialEvolutionPredicate" ref="differentialEvolutionPredicate"/>
+		<constructor-arg name="deStepsCount" value="${de.improvement.steps}"/>
 	</bean>
 
 

@@ -33,6 +33,8 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	private final Predicate<EmasAgent> agentsSelectionPredicate;
 	private final Predicate<Long> differentialEvolutionPredicate;
 
+	private final int deStepsCount;
+
 
 	/**
 	 * @param mutation                       A mutation operator employed by the Differential Evolution scheme.
@@ -45,7 +47,7 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 	 */
 	public HybridEvolutionStep(final DifferentialEvolutionMutation<S> mutation, final Recombination<S> recombination, final Selection<S> selection,
 							   final EmasStep<S> emasStep, final Predicate<EmasAgent> agentsSelectionPredicate,
-							   final Predicate<Long> differentialEvolutionPredicate) {
+							   final Predicate<Long> differentialEvolutionPredicate, final int deStepsCount) {
 		differentialEvolutionStepBuilder = DifferentialEvolutionReproduction.<S>builder()
 			.mutation(requireNonNull(mutation))
 			.recombination(requireNonNull(recombination))
@@ -55,6 +57,7 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 		this.emasStep = requireNonNull(emasStep);
 		this.agentsSelectionPredicate = requireNonNull(agentsSelectionPredicate);
 		this.differentialEvolutionPredicate = requireNonNull(differentialEvolutionPredicate);
+		this.deStepsCount = deStepsCount;
 	}
 
 
@@ -91,13 +94,20 @@ public class HybridEvolutionStep<S extends Solution<?>> implements Step<EmasAgen
 		final DifferentialEvolutionReproduction differentialEvolutionStep =
 			differentialEvolutionStepBuilder.build(environment.workplaceId());
 
-		final Tuple2<List<EmasAgent>, List<EmasAgent>> populationByPredicate =
-			afterStepPopulation.partition(agentsSelectionPredicate);
-		return populationByPredicate._1
-			.map(differentialEvolutionStep)
-			.map(parentAndChild -> parentAndChild._1.withSolution(parentAndChild._2.solution))    // Already evaluated.
-			.appendAll(populationByPredicate._2)
-			.toList();
+		List<EmasAgent> newPopulation = afterStepPopulation;
+
+		for(int i = 0; i < deStepsCount; i++) {
+
+			final Tuple2<List<EmasAgent>, List<EmasAgent>> populationByPredicate =
+				newPopulation.partition(agentsSelectionPredicate);
+			newPopulation = populationByPredicate._1
+				.map(differentialEvolutionStep)
+				.map(parentAndChild -> parentAndChild._1.withSolution(parentAndChild._2.solution))    // Already evaluated.
+				.appendAll(populationByPredicate._2)
+				.toList();
+		}
+
+		return newPopulation;
 	}
 
 }

@@ -19,6 +19,37 @@ public interface Predicates {
 	}
 
 	/**
+	 * Returns the {@link Predicate} which is {@code true} for {@link EmasAgent agent} with energy under {@code energy}.
+	 */
+	static Predicate<EmasAgent> energyUnder(final double energy) {
+		return agent -> agent.energy < energy;
+	}
+
+	/**
+	 * Returns the {@link Predicate} which is {@code true} for {@link EmasAgent agent} with energy greater than
+	 * {@code energy}.
+	 */
+	static Predicate<EmasAgent> energyGreaterThan(final double energy) {
+		return agent -> agent.energy > energy;
+	}
+
+	/**
+	 * Returns the {@link Predicate} which is {@code true} for {@link EmasAgent agent} with energy greater than
+	 * {@code energy}.
+	 */
+	static Predicate<EmasAgent> energyBetween(final double energy) {
+		return agent -> agent.energy > 70 && agent.energy < 100;
+	}
+
+	/**
+	 * Returns the {@link Predicate} which is {@code true} for {@link EmasAgent agent} with fitness greater than
+	 * {@code fitness}.
+	 */
+	static Predicate<EmasAgent> fitnessGreaterThan(final double fitness) {
+		return agent -> agent.solution.fitnessValue() > fitness;
+	}
+
+	/**
 	 * Returns the {@link Predicate} which is {@code true} if and only if given iteration number is not greater than
 	 * {@code iterations}.
 	 */

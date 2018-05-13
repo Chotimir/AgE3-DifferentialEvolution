@@ -41,7 +41,7 @@
 		<constructor-arg name="mutationFactors">
 			<array>
 				<value type="double">${de.mutation.factor-first}</value>
-				<value type="double">${de.mutation.factor-second}</value>
+				<value type="double">${de.mutation.factor-first}</value>
 			</array>
 		</constructor-arg>
 	</bean>

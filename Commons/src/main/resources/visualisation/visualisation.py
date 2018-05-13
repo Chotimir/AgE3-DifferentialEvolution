@@ -22,15 +22,16 @@ def main():
     # PARSING THE CONFIGURATION FILE.
     config = dict()
 
-    with open(sys.argv[1] + '/common-config.properties') as properties_file:
+    with open('C:/Repos/age3-ogr-labs-correct/age3-ogr-labs/AgE3-DifferentialEvolution/Commons/src/main/resources/pl/edu/agh/age/de/common/common-config.properties') as properties_file:
         for entry in properties_file:
             if len(entry.strip()) > 0 and (not entry.startswith('#')):
                 key, value = entry.split('=', 1)
                 config[key.strip()] = value.strip()
 
-    logging_interval_seconds = int(config['de.logging.interval-in-milliseconds']) / 1000
+    logging_interval_seconds = float(config['de.logging.interval-in-milliseconds']) / 1000
     simulation_time = int(config['de.stop-condition.time-in-seconds'])
     ticks_number = int(simulation_time / logging_interval_seconds)
+
 
     # PARSING *.LOG FILES.
     logs_directory_path = sys.argv[1]
@@ -64,8 +65,8 @@ def main():
     start, end, step = 0, ticks_number, 1
 
     # GENERAL PLOT SETTINGS.
-    fig, solutions_plot = plt.subplots()
-    plt.xticks(fontsize=10, rotation=90)
+    fig, solutions_plot = plt.subplots(figsize=(14, 7))
+    plt.xticks(fontsize=8, rotation=90)
     plt.xlabel('Simulation time [s]', fontsize=10)
 
     # SOLUTIONS PLOT.
@@ -85,7 +86,7 @@ def main():
 
     y_tick_size = 1e5
     y_ticks_range = np.arange(plt.gca().get_ylim()[0], plt.gca().get_ylim()[1] + y_tick_size, y_tick_size)
-    plt.yticks(y_ticks_range, ['%.1E' % tick if tick != 0 else '0.0' for tick in y_ticks_range], fontsize=10)
+    plt.yticks(y_ticks_range, ['%.1E' % tick if tick != 0 else '0.0' for tick in y_ticks_range], fontsize=10) # %.1E
     plt.ylabel('Evaluations count', fontsize=10)
 
     # OX TICKS PROPERTIES.
@@ -95,7 +96,7 @@ def main():
 
     # GENERAL PLOT SETTINGS.
     plt.title('Best fitness and evaluations count in the time domain')
-    plt.subplots_adjust(left=0.04, bottom=0.08, right=0.94, top=0.96, wspace=0.0, hspace=0.0)
+    plt.subplots_adjust(left=0.07, bottom=0.10, right=0.93, top=0.96, wspace=0.0, hspace=0.0)
     plt.show()
 
 
