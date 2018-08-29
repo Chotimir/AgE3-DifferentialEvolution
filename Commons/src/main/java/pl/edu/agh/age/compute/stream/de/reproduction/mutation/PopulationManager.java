@@ -75,6 +75,22 @@ public class PopulationManager<T extends Agent> {
 			.get();
 	}
 
+	/**
+	 * Returns a list of size {@code size} composed of randomly chosen (with no return) {@link Agent agents} belonging
+	 * to a current {@link #populationByWorkplace population} living on a workplace with given {@code workplaceID}.
+	 */
+	public synchronized List<EmasAgent> getBest(final int size, final long workplaceID) {
+		checkArgument(0 <= workplaceID && populationByWorkplace.containsKey(workplaceID));
+		final List<T> population = populationByWorkplace.get(workplaceID);
+
+		checkArgument(0 < size && population.size() >= size);
+		return population.stream()
+			.map(agent -> (EmasAgent) agent)
+			.sorted(EmasAgentComparators.lowerFitness().reversed())
+			.limit(size)
+			.collect(Collectors.toList());
+	}
+
 	public synchronized void setPopulation(final List<T> population, final long workplaceID) {
 		populationByWorkplace.put(workplaceID, population);
 	}

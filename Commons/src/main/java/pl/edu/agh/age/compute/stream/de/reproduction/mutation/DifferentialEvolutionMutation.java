@@ -70,4 +70,16 @@ public abstract class DifferentialEvolutionMutation<S extends Solution<?>> {
 	protected <T> T getBestGenotype(final long workplaceID) {
 		return (T) populationManager.getBest(workplaceID).solution.unwrap();
 	}
+
+	/**
+	 * Returns a list of given {@code size} composed of best chosen genotypes belonging to
+	 * {@link pl.edu.agh.age.compute.stream.Agent agents} forming a population held by the {@link #populationManager}
+	 * and identified by given {@code workplaceID}.
+	 */
+	protected <T> List<T> getBestGenotypes(final int size, final long workplaceID) {
+		return populationManager.getBest(size, workplaceID)
+			.stream()
+			.map(agent -> (T) agent.solution.unwrap())
+			.collect(Collectors.toList());
+	}
 }

@@ -14,7 +14,7 @@ public interface Predicates {
 	/**
 	 * Returns the {@link Predicate} which is always {@code true} for any {@link EmasAgent agent}.
 	 */
-	static Predicate<EmasAgent> always() {
+	static Predicate<EmasAgent> always(final double energy) {
 		return agent -> true;
 	}
 
